@@ -179,9 +179,3 @@ multimodal-ai-assistant/
 | `GET` | `/chat/history/{thread_id}` | Fetch full message history for a specific thread |
 | `GET` | `/rename_chat` | Rename a chat thread title |
 | `GET` | `/delete_chat` | Delete a chat thread and associated data |
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
