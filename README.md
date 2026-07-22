@@ -182,14 +182,6 @@ multimodal-ai-assistant/
 
 ---
 
-## 👨‍💻 Author
-
-**Muhammad Ali**
-- Email: [muhammadali5.swe@gmail.com](mailto:muhammadali5.swe@gmail.com)
-- GitHub: [m-ali-swe](https://github.com/m-ali-swe)
-
----
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
