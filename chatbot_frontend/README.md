@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎨 Chatbot Frontend (Next.js 15 UI)
 
-## Getting Started
+The frontend web application for the **Multimodal AI Assistant**, built with **Next.js 15 (App Router)**, **React 19**, **TypeScript**, and **Tailwind CSS v4**. It offers a polished ChatGPT/Gemini-style interface with real-time response streaming, file uploads, conversation history management, and dark-mode styling.
 
-First, run the development server:
+---
+
+## 🌟 Features & Highlights
+
+- **Next.js 15 App Router Architecture**: Uses modern layout routes, middleware authentication checks, and modular client/server components.
+- **Real-Time NDJSON Stream Consumption**: Reads NDJSON chunks via `fetch` and `ReadableStream` to display AI text responses dynamically with real-time auto-scrolling.
+- **Rich Media & Code Formatting**:
+  - Full Markdown rendering with `react-markdown` and `rehype-raw`.
+  - Syntax highlighted code snippets using `react-syntax-highlighter` (prism theme).
+- **File Attachment Support**: Attach PDFs, Word Documents, PowerPoint slides, and text files directly inside the input prompt bar.
+- **Sidebar & Thread History**:
+  - Dynamically load, rename, delete, and switch between saved conversation threads.
+  - Auto-scrolling and automatic title generation for new chats.
+- **Authentication & Middleware**:
+  - Secure authentication flow supporting Login, Signup, and 1-Click Guest Login.
+  - Edge middleware (`middleware.ts`) enforcing authenticated route protection.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 15.5 (App Router with Turbopack)
+- **UI & Styling**: React 19, Tailwind CSS v4, Radix UI Primitives (Dropdowns, Dialogs, Tooltips, Avatars), Lucide Icons
+- **Markdown & Code**: `react-markdown`, `rehype-raw`, `react-syntax-highlighter`
+- **State & Cookies**: React Context API (`ChatContext`), `js-cookie`
+
+---
+
+## 🚀 Getting Started
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure Environment Variables
+
+Create a `.env.local` file in `chatbot_frontend/`:
+
+```env
+NEXT_PUBLIC_BACKEND_URL="http://localhost:8000"
+```
+
+*(Note: Ensure your FastAPI backend is running on port 8000 or update `NEXT_PUBLIC_BACKEND_URL` accordingly).*
+
+### 3. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Build for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📁 Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+chatbot_frontend/
+├── src/
+│   ├── app/
+│   │   ├── (chat)/            # Main chat interface layout and routes
+│   │   │   ├── chat/          # Thread specific chat page
+│   │   │   ├── components/    # Chat UI components (Chat, Sidenav, Input, Messages)
+│   │   │   └── context/       # Global ChatContext state manager
+│   │   ├── auth/              # Auth pages (login, signup)
+│   │   ├── globals.css        # Global CSS styles & Tailwind directives
+│   │   └── layout.tsx         # Root app layout
+│   └── middleware.ts          # Authentication middleware
+├── components.json            # Shadcn / Radix UI component config
+├── next.config.ts             # Next.js configuration
+└── package.json               # Package manifest
+```
