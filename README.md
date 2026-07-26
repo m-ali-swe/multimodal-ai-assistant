@@ -7,7 +7,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-4169E1?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
 
-
+**Multimodal AI Assistant** is an enterprise-grade, full-stack conversational platform inspired by ChatGPT and Google Gemini. Built with a **Next.js 15 (Turbopack)** frontend and a high-throughput **FastAPI** backend, it delivers real-time NDJSON token streaming, stateful agentic workflows orchestrated via **LangGraph**, in-memory multi-format document ingestion (PDF, DOCX, PPTX), and persistent thread checkpointing backed by **PostgreSQL**.
 
 ---
 
