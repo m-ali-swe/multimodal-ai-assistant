@@ -3,7 +3,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-15.5-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.116-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![LangGraph](https://img.shields.io/badge/LangGraph-0.6.6-FF6F61?style=for-the-badge)](https://www.langchain.com/langgraph)
-[![Google Gemini](https://img.shields.io/badge/Google_Gemini-2.0_Flash-4285F4?style=for-the-badge&logo=google-gemini)](https://ai.google.dev/)
+[![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.5_Flash-4285F4?style=for-the-badge&logo=google-gemini)](https://ai.google.dev/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-4169E1?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
 
@@ -53,11 +53,11 @@ graph TD
             ConditionalRoute -->|> 20 Messages| SummarizeNode["Summarizer Node (RemoveMessage)"]
             ToolNode --> CallModelNode
             SummarizeNode --> EndNode["End Node"]
-        </div>
+        end
     end
 
     LangGraphCore <-->|Async Checkpoint Saver| PostgresDB[("PostgreSQL Database\n(User Sessions & Thread States)")]
-    CallModelNode <-->|LangChain API| GeminiAPI["Google Gemini 2.0 Flash API"]
+    CallModelNode <-->|LangChain API| GeminiAPI["Google Gemini 3.5 Flash API"]
 ```
 
 ---
@@ -135,7 +135,7 @@ multimodal-ai-assistant/
 
 ---
 
-## 🚀 Foolproof Local Setup Guide
+## 🛠️ Local Development & Deployment Setup
 
 ### Prerequisites
 - **Python**: `3.11+`
