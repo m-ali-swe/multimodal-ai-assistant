@@ -35,6 +35,7 @@ initialized = False
 
 
 gemini_api_key=os.environ.get("GEMINI_API_KEY")
+gemini_model_name=os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
 DB_URI=os.environ.get("DB_URI")
 
 class MessagesState(MessagesState):
@@ -68,7 +69,7 @@ async def get_graph():
         print(f"\n--- Model is calling the search_web tool with query: '{query}' ---\n")
         return f"The search for '{query}' returned the following result: The global software market is projected to reach $687.9 billion in 2025."
 
-    model=ChatGoogleGenerativeAI(model='gemini-2.0-flash',api_key=gemini_api_key).bind_tools([search_web])
+    model=ChatGoogleGenerativeAI(model=gemini_model_name,api_key=gemini_api_key).bind_tools([search_web])
     
     def call_model(state:MessagesState,config:RunnableConfig)->MessagesState:
         summary=state.get("summary","")
@@ -127,8 +128,8 @@ async def get_graph():
     return graph,checkpointer
 
 app: FastAPI = FastAPI(
-title="Gemini Chatbot Backend",
-description="A simple FastAPI backend for a conversational chatbot using the Gemini API.",
+title="Gemini Chatbot Backend Engine",
+description="Enterprise FastAPI backend for conversational streaming multimodal AI using Gemini & LangGraph.",
 )
 
 @app.on_event("shutdown")
@@ -141,7 +142,6 @@ async def shutdown():
 
 app.add_middleware(
     CORSMiddleware,
-    # allow_origins=["https://chatbot-frontend-delta-seven.vercel.app","http://localhost:3000"],
     allow_origins=[os.environ.get("ALLOWED_ORIGINS","http://localhost:3000")],
     allow_credentials=True,
     allow_methods=["*"],
@@ -152,8 +152,10 @@ app.add_middleware(
 async def read_root():
     await startup()
     return {
-        "Hello": "World",
-        "graph": str(type(graph)),  # or graph.__class__.__name__
+        "status": "online",
+        "service": "Gemini Multimodal AI Assistant Backend",
+        "model": gemini_model_name,
+        "graph": str(type(graph)),
         "checkpointer": str(type(checkpointer)),
         "pool": str(type(pool))
     }
@@ -165,15 +167,6 @@ async def process_files(files:List[UploadFile]=File(...)):
         content_type=file.content_type
         content=await file.read()
         
-        # if content_type.startswith("image/"):
-            
-        #     file_path=save_local_file(content,file.filename)
-        #     public_url = f"http://localhost:8000/uploads/{os.path.basename(file_path)}"
-        #     message_parts.append({
-        #         "type":"image_url",
-        #         "image_url":{"url":public_url}
-        #     })
-                        
         if content_type.startswith("application/pdf"):
             with open(file_name,"wb") as f:
                 f.write(content)
@@ -188,24 +181,12 @@ async def process_files(files:List[UploadFile]=File(...)):
             })
         
         elif content_type.startswith("application/vnd.openxmlformats-officedocument.wordprocessingml.document"):
-            
             doc=Document(io.BytesIO(content))
             text="Data from Docx : " + "\n".join(p.text for p in doc.paragraphs)
             message_parts.append({
                 "type":"text",
                 "text":text
             })
-        # elif content_type.startswith("application/vnd.ms-excel") or content_type.startswith("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"):
-        #     if file_name.endswith(".xlsx"):
-        #         engine="openpyxl"
-        #     elif file_name.endswith(".xls"):
-        #         engine="xlrd"
-        #     df=pd.read_excel(io.BytesIO(content),engine=engine)
-        #     text="Data from Xlsx : \n" + df.to_string()
-        #     message_parts.append({
-        #         "type":"text",
-        #         "text":text
-        #     })
 
         elif content_type.startswith("application/vnd.openxmlformats-officedocument.presentationml.presentation"):
             presentation=Presentation(io.BytesIO(content))
@@ -280,11 +261,10 @@ async def chat_stream(query: str=Form(...), thread_id: str=Form(...),files:List[
     config = {"configurable": {"thread_id": thread_id}}
     print(f"thread_id in chat_stream : {thread_id}")
     messages = [{"type": "text", "text": query}]
-    # files=[]
     if files:
         extracted_parts = await process_files(files)
         messages.extend(extracted_parts)
-    graph=get_graph()
+    graph, _ = await get_graph()
     async def event_generator():
         try:
             node_to_stream = "conversation"
@@ -298,17 +278,14 @@ async def chat_stream(query: str=Form(...), thread_id: str=Form(...),files:List[
             print("⚠️ Stream cancelled by client")
             raise
         
-    
     return StreamingResponse(event_generator(),media_type="application/x-ndjson") 
 
 @app.post("/new_chat_stream")
 async def chat_stream(request:Request,db:Annotated[Session,Depends(get_db)],query: str=Form(...),files:Optional[List[UploadFile]]=File(None)):
     await startup()
     user_id=request.cookies.get("user_id")
-    # user_id="1"
     print(f"User id in new_chat_stream : {user_id}")
     messages = [{"type": "text", "text": query}]
-    # files=[]
     if files:
         extracted_parts = await process_files(files)
         messages.extend(extracted_parts)
@@ -316,7 +293,7 @@ async def chat_stream(request:Request,db:Annotated[Session,Depends(get_db)],quer
     thread_id=str(uuid.uuid4())
     print(f"New thread id : {thread_id}")
     config = {"configurable": {"thread_id": thread_id}}
-    graph=get_graph()
+    graph, _ = await get_graph()
     async def event_generator():
         try:
             yield json.dumps({"type": "init", "thread_id": thread_id}) + "\n"
@@ -329,8 +306,6 @@ async def chat_stream(request:Request,db:Annotated[Session,Depends(get_db)],quer
                         yield json.dumps({"type": "content", "response": chunk.content}) + "\n"
                     else:
                         yield json.dumps({"type": "keepalive"}) + "\n"
-                # elif event["event"] == "on_chain_end":
-                #     break  # Ensure clean exit on chain completion
         except Exception as e:
             print(f"Error in event_generator: {e}")
             yield json.dumps({"type": "error", "message": str(e)}) + "\n"
@@ -341,7 +316,7 @@ async def chat_stream(request:Request,db:Annotated[Session,Depends(get_db)],quer
             f"No bullet points, no quotes, no explanations. "
             f"First message: '{query}'"
         )
-        temp_model=ChatGoogleGenerativeAI(model='gemini-2.0-flash',api_key=gemini_api_key)
+        temp_model=ChatGoogleGenerativeAI(model=gemini_model_name,api_key=gemini_api_key)
         print("streamed everything")        
         temp_res = await temp_model.ainvoke(prompt)
         print(f"New chat name : {temp_res.content}")
@@ -353,7 +328,6 @@ async def chat_stream(request:Request,db:Annotated[Session,Depends(get_db)],quer
         db.add(temp_chat)
         db.commit()
         db.refresh(temp_chat)                
-    # return StreamingResponse(event_generator(),media_type="application/x-ndjson",headers={"Transfer-Encoding": "chunked", "X-Accel-Buffering": "no"}) 
     return StreamingResponse(event_generator(),media_type="application/x-ndjson") 
 
 
@@ -386,8 +360,6 @@ def login(db:Annotated[Session,Depends(get_db)],email: str = Body(...), password
             return res
         response_data={"message": "Login successful"}
         response =JSONResponse(content=response_data)
-        # response.set_cookie(key="token",value=res["access_token"],httponly=True,domain=".vercel.app",secure=True,samesite="none")
-        # response.set_cookie(key="user_id",value=res["user"].id,httponly=True,domain=".vercel.app",secure=True,samesite="none")
         response.set_cookie(key="token",value=res["access_token"],httponly=True,secure=True,samesite="none")
         response.set_cookie(key="user_id",value=res["user"].id,httponly=True,secure=True,samesite="none")
         return response
@@ -405,14 +377,11 @@ def signup(db:Annotated[Session,Depends(get_db)],email: str = Body(...), passwor
         response=JSONResponse(content=response_data)
         response.set_cookie(key="token",value=res["access_token"],httponly=True,secure=True,samesite="none")
         response.set_cookie(key="user_id",value=res["new_user"].id,httponly=True,secure=True,samesite="none")
-        # response.set_cookie(key="token",value=res["access_token"],httponly=True,domain=".vercel.app",secure=True,samesite="none")
-        # response.set_cookie(key="user_id",value=res["new_user"].id,httponly=True,domain=".vercel.app",secure=True,samesite="none")
         return response
     except Exception as e:
         return {"error":e,"type":"execption"}
 
 
-# def guest_login(db:Annotated[Session,Depends(get_db)],redirect_url: Optional[str] = Query(None)):
 @app.get("/guest_login")
 def guest_login(db:Annotated[Session,Depends(get_db)]):
     email=f"guest_{uuid.uuid4()}"
@@ -422,17 +391,12 @@ def guest_login(db:Annotated[Session,Depends(get_db)]):
         print(f"Guest signup response : {res}")
         if "Error" in res or "Exception" in res:
             return res        
-        # response_data={"message":"account created successfully"}
         
         response = RedirectResponse("https://chatbot-frontend-delta-seven.vercel.app/")
-        # response = JSONResponse(content={"message": "account created successfully", "access_token": res["access_token"], "user_id": str(res["new_user"].id)})
-        # response.set_cookie(key="token",value=res["access_token"],httponly=True,domain=".vercel.app",secure=True,samesite="none")
-        # response.set_cookie(key="user_id",value=res["new_user"].id,httponly=True,domain=".vercel.app",secure=True,samesite="none")
         response.set_cookie(key="token",value=res["access_token"],httponly=True,secure=True,samesite="none")
         response.set_cookie(key="user_id",value=res["new_user"].id,httponly=True,secure=True,samesite="none")
         return response
     except Exception as e:
-        # return {"error":e,"type":"execption"}
         return JSONResponse(content={"error": str(e), "type": "exception"}, status_code=500)
     
 @app.get("/auth/logout")
@@ -440,7 +404,5 @@ def logout():
     response = JSONResponse(content={"message": "Logged out successfully"})
     response.delete_cookie(key="token", path="/",secure=True,samesite="none")
     response.delete_cookie(key="user_id", path="/",secure=True,samesite="none")
-    # response.delete_cookie(key="token", path="/", domain=".vercel.app",secure=True,samesite="none")
-    # response.delete_cookie(key="user_id", path="/", domain=".vercel.app",secure=True,samesite="none")
     print("User logged out, cookies deleted.")
     return response

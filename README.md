@@ -1,69 +1,113 @@
-# 🚀 Multimodal AI Assistant
+# 🚀 Multimodal AI Assistant — Full-Stack Conversational Intelligence Platform
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.5-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.116-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![LangGraph](https://img.shields.io/badge/LangGraph-0.6.6-FF6F61?style=for-the-badge)](https://www.langchain.com/langgraph)
-[![Gemini 2.0](https://img.shields.io/badge/Google_Gemini-2.0_Flash-4285F4?style=for-the-badge&logo=google-gemini)](https://ai.google.dev/)
+[![Google Gemini](https://img.shields.io/badge/Google_Gemini-2.0_Flash-4285F4?style=for-the-badge&logo=google-gemini)](https://ai.google.dev/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-4169E1?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
 
-A full-stack, enterprise-grade **Multimodal AI Chat Assistant** inspired by ChatGPT and Google Gemini. Built with a modern **Next.js 15** frontend and a robust **FastAPI** backend, it features real-time NDJSON token streaming, stateful agent workflows powered by **LangGraph**, document parsing capabilities (PDF, DOCX, PPTX, TXT), and persistent database checkpointing via **PostgreSQL**.
+**Multimodal AI Assistant** is an enterprise-grade, full-stack conversational platform inspired by ChatGPT and Google Gemini. Built with a **Next.js 15 (Turbopack)** frontend and a high-throughput **FastAPI** backend, it delivers real-time NDJSON token streaming, stateful agentic workflows orchestrated via **LangGraph**, in-memory multi-format document ingestion (PDF, DOCX, PPTX), and persistent thread checkpointing backed by **PostgreSQL**.
+
+> 🌐 **Live Web Application**: [Frontend App](https://chatbot-frontend-delta-seven.vercel.app) | [FastAPI Engine](https://chatbot-backend-delta-seven.vercel.app/docs)
 
 ---
 
-## 🌟 Key Features
+## 🌟 Key Architectural Capabilities
 
-- 🖼️ **Multimodal & Document Processing**: Upload and query complex documents including **PDFs**, **Microsoft Word (`.docx`)**, **PowerPoint (`.pptx`)**, and **plain text files**. Text is extracted on the fly and injected seamlessly into the Gemini prompt context.
-- ⚡ **Real-Time Token Streaming**: High-performance Server-Sent Event (NDJSON) streaming yields immediate typewriter-style responses with zero noticeable latency.
+- 📄 **Stateless In-Memory Document Ingestion**: Upload and query complex documents including **PDFs**, **Microsoft Word (`.docx`)**, **PowerPoint (`.pptx`)**, and **plain text files**. Binary streams are extracted in memory via `io.BytesIO` and injected directly into the Gemini prompt context without disk I/O latency.
+- ⚡ **Real-Time Event Streaming**: Asynchronous HTTP streaming using `StreamingResponse` and NDJSON event generators yields low-latency, typewriter-style token streaming with instant client cancellation handling.
 - 🧠 **LangGraph Stateful Agent Architecture**:
-  - **Context-Aware Memory**: Persistent state tracking across user sessions using thread identifiers.
-  - **Automated Conversation Summarization**: Automatically condenses earlier message turns once conversation length exceeds 20 messages, preventing context window limits while preserving key chat details.
-  - **Tool Binding & Execution**: Integrated agentic capabilities with web search and custom function calling nodes.
-- 💾 **PostgreSQL Async Checkpointing**: Uses `AsyncPostgresSaver` and asynchronous connection pools (`psycopg3`) to store graph checkpoints directly in database tables.
-- 🔐 **Secure Authentication & Session Management**:
-  - Custom JWT-based authentication (`python-jose`) with bcrypt password hashing (`passlib`).
-  - Secure HTTP-Only cookie handling across cross-origin environments.
-  - **1-Click Guest Login**: Instant trial mode access for guest users without requiring formal account creation.
-- 🎨 **Modern ChatGPT-Style Responsive UI**:
-  - Sleek dark-mode interface built with Next.js 15 (App Router), React 19, and Tailwind CSS v4.
-  - Markdown parsing (`react-markdown`) with syntax highlighting (`react-syntax-highlighter`) for code blocks.
-  - Sidebar for chat history management (create, rename, delete, switch threads).
+  - **Thread-Level Checkpointing**: Stateful conversation tracking backed by `AsyncPostgresSaver` and asynchronous connection pools (`psycopg_pool`).
+  - **Automatic Context Summarization**: Automatically condenses earlier message turns once thread history exceeds 20 messages, pruning state via `RemoveMessage` primitives to preserve LLM token limits while keeping long-term memory intact.
+  - **Agentic Tool Execution**: Dynamic node routing based on model tool calls (e.g. real-time web search integration).
+- 🔐 **Cross-Origin Session Security & 1-Click Guest Trial**:
+  - Stateful JWT authentication with bcrypt password hashing (`passlib`).
+  - HTTP-Only `SameSite=None` secure cookie handling supporting cross-domain deployments (`vercel.app`).
+  - **1-Click Guest Mode**: Generates temporary UUID guest profiles for instant trial access without registration friction.
+- 🎨 **ChatGPT-Style Next.js 15 UI**:
+  - Responsive dark-mode interface built with Next.js 15 App Router, React 19, and Tailwind CSS v4.
+  - Full Markdown rendering (`react-markdown`) with syntax highlighting (`react-syntax-highlighter`) for code blocks.
+  - Dynamic sidebar for managing active threads (create, rename, delete, switch histories).
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ High-Level System Architecture
+
+The platform separates frontend user experience from agent execution, enabling independent scaling of the Next.js presentation layer and the FastAPI LangGraph execution engine.
 
 ```mermaid
 graph TD
-    User([User / Browser]) <-->|HTTP / Cookie Auth| Frontend[Next.js 15 App Router]
-    Frontend <-->|Streaming SSE / NDJSON| Backend[FastAPI Backend Engine]
-    
-    subgraph FastAPI Backend
-        AuthService[JWT & Auth Service]
-        FileProcessor[Document Parser - PyPDF2 / Docx / PPTX]
-        LangGraphEngine[LangGraph StateGraph Engine]
+    UserClient["🌐 User Browser"] <-->|HTTP-Only Cookies & CORS| NextFrontend["Frontend (Next.js 15 App Router + React 19)"]
+    NextFrontend <-->|Streaming SSE / NDJSON Event Stream| FastAPIEngine["Backend Engine (FastAPI + Uvicorn)"]
+
+    subgraph FastAPI Backend Architecture ["⚡ FastAPI Backend Infrastructure"]
+        FastAPIEngine --> AuthModule["Auth & Cookie Service (JWT + Passlib)"]
+        FastAPIEngine --> FileParser["Document Parsing Engine (PyPDF2 / Docx / PPTX)"]
+        FastAPIEngine --> LangGraphCore["LangGraph StateGraph Engine"]
+
+        subgraph LangGraph Nodes ["🧠 LangGraph Execution Pipeline"]
+            LangGraphCore --> CallModelNode["Conversation Node (Call Model)"]
+            CallModelNode --> ConditionalRoute{"Should Continue?"}
+            ConditionalRoute -->|Tool Call| ToolNode["Tool Execution Node (Web Search)"]
+            ConditionalRoute -->|> 20 Messages| SummarizeNode["Summarizer Node (RemoveMessage)"]
+            ToolNode --> CallModelNode
+            SummarizeNode --> EndNode["End Node"]
+        </div>
     end
 
-    Backend --> AuthService
-    Backend --> FileProcessor
-    Backend --> LangGraphEngine
-
-    LangGraphEngine <-->|Async Checkpoint Saver| Postgres[(PostgreSQL DB - User & Thread State)]
-    LangGraphEngine <-->|LangChain API| Gemini[Google Gemini 2.0 Flash Model]
+    LangGraphCore <-->|Async Checkpoint Saver| PostgresDB[("PostgreSQL Database\n(User Sessions & Thread States)")]
+    CallModelNode <-->|LangChain API| GeminiAPI["Google Gemini 2.0 Flash API"]
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## ⚡ Engineering Challenges & Technical Solutions
 
-| Domain | Technologies |
-| :--- | :--- |
-| **Frontend** | Next.js 15.5 (Turbopack), React 19, TypeScript, Tailwind CSS v4, Radix UI Primitives, Lucide Icons |
-| **Backend** | Python 3.11+, FastAPI, Uvicorn, LangChain, LangGraph, Pydantic |
-| **AI / LLM** | Google Gemini 2.0 Flash (`langchain-google-genai`) |
-| **Document Processing** | PyPDF2, python-docx, python-pptx |
-| **Database & Persistence**| PostgreSQL, SQLAlchemy 2.0 ORM, `psycopg3` Async Pool, `langgraph-checkpoint-postgres` |
-| **Security & Auth** | JWT (`python-jose`), Passlib (bcrypt), HTTP-Only Cookies, CORS |
+### 1. Low-Latency NDJSON Token Streaming with Client Cancellation
+* **Challenge**: Standard HTTP response buffering delays AI responses until the entire model output is generated, causing poor UX during long explanations.
+* **Solution**: Implemented an async event generator wrapped in FastAPI's `StreamingResponse(media_type="application/x-ndjson")`. The server streams JSON event chunks (`{"type": "content", "response": "..."}`) using LangGraph's `astream_events(version="v2")`. Client disconnects trigger an `asyncio.CancelledError` handler to gracefully abort active Gemini API calls and prevent background resource leaks.
+
+### 2. Context Window Optimization via LangGraph Message Pruning
+* **Challenge**: Extended chat sessions accumulate high token counts, exceeding context windows and increasing LLM API costs.
+* **Solution**: Designed a conditional routing node `should_continue` inside the LangGraph workflow. When thread length exceeds 20 messages, execution automatically diverts to a `summarize_conversation` node. The node invokes Gemini to generate a concise summary of prior context, prepends the summary as a `SystemMessage`, and emits `RemoveMessage` instructions to prune historical messages from PostgreSQL memory while preserving conversation context.
+
+### 3. In-Memory Document Ingestion without Disk I/O Bottlenecks
+* **Challenge**: Uploading large multi-format files (PDF, Word, PPTX) to server disk drives creates I/O bottlenecks and file system cleanup requirements in serverless or containerized environments.
+* **Solution**: Developed an in-memory document parsing engine (`process_files`). Incoming `UploadFile` streams are processed directly in RAM via `io.BytesIO`. `PyPDF2`, `python-docx`, and `python-pptx` extract text elements synchronously, formatting extracted text blocks into structured prompt parts that are appended directly to the `HumanMessage` payload.
+
+### 4. Cross-Origin HTTP-Only Cookie Authentication
+* **Challenge**: Browsers block third-party authentication cookies across separate frontend (`vercel.app`) and backend origins.
+* **Solution**: Standardized JWT session token delivery using `JSONResponse.set_cookie()` with `httponly=True`, `secure=True`, and `samesite="none"`. Configured FastAPI `CORSMiddleware` with explicit `allow_origins` parsing, enabling seamless cookie persistence across cross-domain environments.
+
+---
+
+## 📊 Database & Payload Schemas
+
+### Relational Schema (PostgreSQL & SQLAlchemy)
+
+```
++------------------------------------+        +------------------------------------+
+|               User                 |        |               Chats                |
++------------------------------------+        +------------------------------------+
+| id (PK, String/UUID)               |<------1| thread_id (PK, String/UUID)       |
+| email (Unique, String)             |       | user_id (FK -> User.id)            |
+| hashed_password (String)           |        | chat_name (String)                 |
+| created_at (Timestamp)             |        | created_at (Timestamp)             |
++------------------------------------+        +------------------------------------+
+                                                                |
+                                                                | 1:N
+                                                                v
+                                              +------------------------------------+
+                                              |       checkpoints (LangGraph)      |
+                                              +------------------------------------+
+                                              | thread_id (String)                 |
+                                              | checkpoint_id (String)             |
+                                              | parent_checkpoint_id (String)      |
+                                              | type (String)                      |
+                                              | checkpoint (Bytea/JSONB)           |
+                                              +------------------------------------+
+```
 
 ---
 
@@ -71,48 +115,44 @@ graph TD
 
 ```
 multimodal-ai-assistant/
-├── chatbot_backend/          # FastAPI backend service
+├── chatbot_backend/                  # FastAPI backend service
 │   ├── src/
 │   │   └── chatbot_backend/
-│   │       ├── main.py       # FastAPI application, streaming routes & LangGraph workflow
-│   │       ├── db.py         # SQLAlchemy database models & session generator
-│   │       └── service.py    # Authentication, password hashing & JWT handling
-│   ├── pyproject.toml        # Dependencies & build configuration (uv / hatchling)
-│   ├── requirements.txt      # Python dependencies manifest
-│   ├── .env.example          # Sample backend environment configuration
-│   └── README.md             # Backend detailed documentation
+│   │       ├── main.py               # FastAPI application, streaming endpoints & LangGraph workflow
+│   │       ├── db.py                 # SQLAlchemy models, PostgreSQL pool & session generator
+│   │       └── service.py            # JWT generation, password hashing & user services
+│   ├── pyproject.toml                # Dependencies & build manifest (uv / hatchling)
+│   ├── requirements.txt              # Backend requirements manifest
+│   └── .env.example                  # Backend environment variable template
 │
-└── chatbot_frontend/         # Next.js 15 web interface
+└── chatbot_frontend/                 # Next.js 15 web application
     ├── src/
-    │   ├── app/              # Next.js App Router (auth, chat routes, layouts)
-    │   ├── components/       # Reusable UI components & dialogs
-    │   └── middleware.ts     # Edge authentication routing middleware
-    ├── package.json          # Dependencies & npm scripts
-    ├── next.config.ts        # Next.js configuration
-    └── README.md             # Frontend detailed documentation
+    │   ├── app/                      # Next.js App Router (auth pages, chat UI, API clients)
+    │   └── components/               # UI components & Markdown parsers
+    ├── package.json                  # Dependencies & npm scripts
+    └── next.config.ts                # Next.js configuration
 ```
 
 ---
 
-## 🚦 Getting Started
+## 🚀 Foolproof Local Setup Guide
 
 ### Prerequisites
-
 - **Python**: `3.11+`
-- **Node.js**: `18.x` or `20.x+` (npm included)
+- **Node.js**: `18.x` or `20.x+`
 - **Database**: Running PostgreSQL instance
 - **API Key**: [Google Gemini API Key](https://aistudio.google.com/)
 
 ---
 
-### 1. Backend Setup
+### 1. Backend Setup (FastAPI & LangGraph)
 
 1. **Navigate to backend directory**:
    ```bash
    cd chatbot_backend
    ```
 
-2. **Create & activate a virtual environment**:
+2. **Create & activate virtual environment**:
    ```bash
    python -m venv .venv
    # Windows:
@@ -126,27 +166,28 @@ multimodal-ai-assistant/
    pip install -r requirements.txt
    ```
 
-4. **Environment Variables**:
+4. **Configure Environment Variables**:
    Create a `.env` file in `chatbot_backend/` based on `.env.example`:
    ```env
    GEMINI_API_KEY="your_google_gemini_api_key"
+   GEMINI_MODEL="gemini-2.0-flash"
    DB_URI="postgresql://username:password@localhost:5432/your_database_name"
    ALLOWED_ORIGINS="http://localhost:3000"
    ```
 
-5. **Start the FastAPI Development Server**:
+5. **Start FastAPI Backend Engine**:
    ```bash
    uvicorn src.chatbot_backend.main:app --reload --port 8000
    ```
-   The backend API will be available at `http://localhost:8000`. API docs at `http://localhost:8000/docs`.
+   The backend API will run at `http://localhost:8000`. API documentation at `http://localhost:8000/docs`.
 
 ---
 
-### 2. Frontend Setup
+### 2. Frontend Setup (Next.js 15)
 
 1. **Navigate to frontend directory**:
    ```bash
-   cd chatbot_frontend
+   cd ../chatbot_frontend
    ```
 
 2. **Install dependencies**:
@@ -154,24 +195,27 @@ multimodal-ai-assistant/
    npm install
    ```
 
-3. **Environment Variables**:
-   Ensure `NEXT_PUBLIC_BACKEND_URL` is set in your `.env.local` or environment (defaults to `http://localhost:8000` if configured).
+3. **Configure Environment Variables**:
+   Create a `.env.local` file in `chatbot_frontend/`:
+   ```env
+   NEXT_PUBLIC_BACKEND_URL="http://localhost:8000"
+   ```
 
-4. **Run the Next.js Development Server**:
+4. **Start Next.js Development Server**:
    ```bash
    npm run dev
    ```
-   Open `http://localhost:3000` in your browser.
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🔌 API Endpoints Summary
+## 🔌 API Reference Summary
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `POST` | `/auth/signup` | Register a new user account |
+| `POST` | `/auth/signup` | Register a new user account with hashed password |
 | `POST` | `/auth/login` | Authenticate user and receive HTTP-Only cookie |
-| `GET` | `/guest_login` | Instant 1-click guest authentication |
+| `GET` | `/guest_login` | Instant 1-click guest authentication session |
 | `GET` | `/auth/logout` | Clear user cookies and end session |
 | `POST` | `/new_chat_stream` | Initialize a new chat thread, upload files, and stream response |
 | `POST` | `/chat_stream` | Continue existing thread streaming with optional attachments |
