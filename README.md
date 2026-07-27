@@ -32,30 +32,34 @@
 
 ## 🏗️ High-Level System Architecture
 
-The platform separates frontend user experience from agent execution, enabling independent scaling of the Next.js presentation layer and the FastAPI LangGraph execution engine.
-
-```mermaid
-graph TD
-    UserClient["🌐 User Browser"] <-->|HTTP-Only Cookies & CORS| NextFrontend["Frontend (Next.js 15 App Router + React 19)"]
-    NextFrontend <-->|Streaming SSE / NDJSON Event Stream| FastAPIEngine["Backend Engine (FastAPI + Uvicorn)"]
-
-    subgraph FastAPI Backend Architecture ["⚡ FastAPI Backend Infrastructure"]
-        FastAPIEngine --> AuthModule["Auth & Cookie Service (JWT + Passlib)"]
-        FastAPIEngine --> FileParser["Document Parsing Engine (PyPDF2 / Docx / PPTX)"]
-        FastAPIEngine --> LangGraphCore["LangGraph StateGraph Engine"]
-
-        subgraph LangGraph Nodes ["🧠 LangGraph Execution Pipeline"]
-            LangGraphCore --> CallModelNode["Conversation Node (Call Model)"]
-            CallModelNode --> ConditionalRoute{"Should Continue?"}
-            ConditionalRoute -->|Tool Call| ToolNode["Tool Execution Node (Web Search)"]
-            ConditionalRoute -->|> 20 Messages| SummarizeNode["Summarizer Node (RemoveMessage)"]
-            ToolNode --> CallModelNode
-            SummarizeNode --> EndNode["End Node"]
-        end
-    end
-
-    LangGraphCore <-->|Async Checkpoint Saver| PostgresDB[("PostgreSQL Database\n(User Sessions & Thread States)")]
-    CallModelNode <-->|LangChain API| GeminiAPI["Google Gemini 3.5 Flash API"]
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                        USER BROWSER / CLIENT                           │
+│                 (React 19 / Tailwind CSS v4 UI)                        │
+└──────────────────────────────────┬─────────────────────────────────────┘
+                                   │ HTTP-Only Cookies & SSE Streaming
+                                   ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                    NEXT.JS 15 FRONTEND APP ROUTER                      │
+└──────────────────────────────────┬─────────────────────────────────────┘
+                                   │ Async NDJSON Event Stream
+                                   ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                    FASTAPI BACKEND INFRASTRUCTURE                      │
+│            (Auth Engine / PyPDF2 / Docx / PPTX Ingestion)             │
+└──────────────────────────────────┬─────────────────────────────────────┘
+                                   │ Stateful Flow Dispatch
+                                   ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                   LANGGRAPH STATEGRAPH WORKFLOW                        │
+│   (Conversation Node ➔ Tool Execution Node ➔ Summarizer Node)          │
+└──────────────────┬───────────────────────────────┬─────────────────────┘
+                   │                               │
+                   ▼                               ▼
+┌───────────────────────────────────┐ ┌──────────────────────────────────┐
+│   POSTGRESQL DATABASE             │ │   GOOGLE GEMINI 3.5 FLASH API    │
+│   (Async Checkpoint Saver Memory) │ │   (Multimodal LLM Inference)     │
+└───────────────────────────────────┘ └──────────────────────────────────┘
 ```
 
 ---
