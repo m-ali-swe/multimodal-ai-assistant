@@ -17,9 +17,14 @@ interface MessagesProps {
 
 function ThinkingIndicator() {
   return (
-    <div className="flex items-center gap-2 text-purple-400 text-xs font-mono mb-2 bg-purple-950/40 border border-purple-500/20 px-3 py-1.5 rounded-full w-fit animate-pulse">
-      <Brain className="size-3.5 animate-spin" />
+    <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono mb-2 bg-cyan-950/40 border border-cyan-500/20 px-3 py-1 rounded-full w-fit">
+      <Brain className="size-3.5 text-cyan-400 animate-pulse" />
       <span>Reasoning & Analyzing...</span>
+      <div className="flex gap-1 items-center ml-1">
+        <div className="size-1 bg-cyan-400 rounded-full animate-bounce" />
+        <div className="size-1 bg-cyan-400 rounded-full animate-bounce [animation-delay:0.15s]" />
+        <div className="size-1 bg-cyan-400 rounded-full animate-bounce [animation-delay:0.3s]" />
+      </div>
     </div>
   )
 }

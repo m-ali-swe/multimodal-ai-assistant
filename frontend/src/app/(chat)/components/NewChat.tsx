@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import { Presentation, FileText, FileSpreadsheet, Image as ImageIcon, FileCode, ArrowUpRight } from "lucide-react"
 
 interface NewChatProps {
@@ -44,11 +43,10 @@ export default function NewChat({ onSelectPrompt }: NewChatProps) {
       {/* Hero Header */}
       <div className="text-center space-y-1.5 mb-3">
         <div className="inline-flex items-center justify-center p-1.5 rounded-xl bg-slate-900 border border-slate-800 shadow-md">
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src="/logo.png"
             alt="Multimodal AI Architect"
-            width={32}
-            height={32}
             className="size-8 object-contain"
           />
         </div>

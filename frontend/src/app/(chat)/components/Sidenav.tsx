@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
 import { useChats } from "../context/ChatContext"
 import ChatNameElem from "./ChatNameElem"
 import { MessageSquare, Plus, LogOut, User } from "lucide-react"
@@ -66,11 +65,10 @@ export default function Sidenav() {
             className="flex items-center gap-2.5 cursor-pointer group px-0.5"
           >
             <div className="size-8 aspect-square shrink-0 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-500/40 transition-colors flex items-center justify-center overflow-hidden">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src="/logo.png"
                 alt="Multimodal AI Logo"
-                width={28}
-                height={28}
                 className="size-7 aspect-square shrink-0 object-contain"
               />
             </div>

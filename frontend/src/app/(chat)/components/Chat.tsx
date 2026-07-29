@@ -19,7 +19,7 @@ interface ChatProps {
 }
 
 export default function Chat({ threadId, initialMessages }: ChatProps) {
-  const [messages, setMessages] = useState<Message[]>(initialMessages.length > 0 ? initialMessages : [])
+  const [messages, setMessages] = useState<Message[]>(initialMessages)
   const [currentThreadId, setCurrentThreadId] = useState<string | null>(threadId)
   const [isLoading, setIsLoading] = useState(false)
   const [selectedModel, setSelectedModel] = useState("Simple")
@@ -28,6 +28,13 @@ export default function Chat({ threadId, initialMessages }: ChatProps) {
   const { setChats } = useChats()
   const controllerRef = useRef<AbortController | null>(null)
 
+  // Sync state when props change (e.g., clicking New Chat or navigating between threads)
+  useEffect(() => {
+    setCurrentThreadId(threadId)
+    setMessages(initialMessages)
+  }, [threadId, initialMessages])
+
+  // Scroll to bottom when new messages arrive
   useEffect(() => {
     if (messages.length === 0) return
     const last = messages[messages.length - 1]
