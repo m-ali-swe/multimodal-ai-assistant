@@ -2,6 +2,7 @@
 
 import { Share2, ChevronDown, Zap, Brain, Sparkles, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { useState } from "react"
@@ -29,9 +30,11 @@ export default function TopBar({ selectedModel, onModelChange }: TopBarProps) {
 
   return (
     <>
-      <div className="h-14 min-h-[3.5rem] w-full flex items-center justify-between px-4 sm:px-6 border-b border-slate-800/80 bg-slate-950/60 backdrop-blur-xl z-20">
-        {/* Model Switcher Dropdown */}
+      <div className="h-14 min-h-[3.5rem] w-full flex items-center justify-between px-3 sm:px-5 border-b border-slate-800/80 bg-slate-950/60 backdrop-blur-xl z-20">
+        {/* Left: Sidebar Toggle + Model Switcher */}
         <div className="flex items-center gap-2">
+          <SidebarTrigger className="text-slate-400 hover:text-white hover:bg-slate-900 rounded-xl size-8" />
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -83,7 +86,7 @@ export default function TopBar({ selectedModel, onModelChange }: TopBarProps) {
           </DropdownMenu>
         </div>
 
-        {/* Share Button */}
+        {/* Right: Share Action */}
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"

@@ -63,18 +63,10 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 
   return (
     <div className={cn("w-full max-w-sm sm:max-w-md mx-auto space-y-4", className)} {...props}>
-      {/* Brand & Multimodal Identity Header with Favicon */}
+      {/* Brand & Multimodal Identity Header without favicon */}
       <div className="flex flex-col items-center text-center space-y-2">
-        <Link href="/" className="inline-flex items-center gap-2.5 group focus:outline-none">
-          <div className="p-2 rounded-xl bg-slate-900 border border-slate-800 shadow-lg shadow-cyan-950/30 group-hover:border-cyan-500/50 transition-all duration-300 flex items-center justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/favicon-32x32.png"
-              alt="Multimodal AI Icon"
-              className="size-7 object-contain"
-            />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-white">
+        <Link href="/" className="inline-flex items-center gap-2 group focus:outline-none">
+          <span className="text-2xl font-bold tracking-tight text-white">
             Multimodal <span className="text-cyan-400">AI</span>
           </span>
         </Link>
