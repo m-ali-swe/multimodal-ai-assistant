@@ -32,7 +32,6 @@ export default function ChatProvider({children}: {children: ReactNode}) {
                   credentials:"include"
                 });
                 const data = await res.json();
-                console.log("Data inside chatContext : ",data)
                 setChats(data.chats || []);
                 setUserInfo({email:data.user_email,user_id:data.user_id,total_chats:data.total_chats})
             } catch (err) {

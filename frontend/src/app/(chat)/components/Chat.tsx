@@ -119,7 +119,7 @@ export default function Chat({ threadId, initialMessages }:ChatProps) {
               })
             }
           } catch (parseError) {
-            console.log("JSON parse error:", parseError)
+            console.warn("JSON parse error:", parseError)
           }
         }
       }

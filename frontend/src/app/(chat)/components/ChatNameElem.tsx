@@ -48,8 +48,6 @@ export default function ChatNameElem({ chat }:ChatNameProps) {
 
   const handleRename = async () => {
     if (!newName) return
-    // console.log("Rename called : ",newName)
-    // return;
     chat.chat_name=newName
     try {
       await fetch(

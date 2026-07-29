@@ -17,17 +17,14 @@ export default function MessageActions({ content, isHuman }: MessageActionsProps
     navigator.clipboard.writeText(content)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
-    // console.log("Copied message")
   }
 
   const handleUpvote = () => {
     setVoteState(voteState === "upvote" ? null : "upvote")
-    // console.log("Upvoted!")
   }
 
   const handleDownvote = () => {
     setVoteState(voteState === "downvote" ? null : "downvote")
-    // console.log("Downvoted!")
   }
 
   return (

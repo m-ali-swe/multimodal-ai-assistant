@@ -15,7 +15,6 @@ export default function TopBar({ selectedModel, onModelChange }: TopBarProps) {
 
   const handleShare = () => {
     setShareDialogOpen(true)
-    // console.log("Share conversation")
   }
 
   return (
