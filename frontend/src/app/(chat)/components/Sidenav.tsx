@@ -58,24 +58,25 @@ export default function Sidenav() {
 
   return (
     <>
-      <Sidebar collapsible="icon" className="border-r border-slate-800/80 bg-slate-950 text-slate-100 font-sans">
+      <Sidebar collapsible="icon" className="border-r border-slate-800/80 bg-slate-950 text-slate-100 font-sans transition-[width,margin] duration-200 ease-in-out select-none">
         {/* Header / Logo */}
-        <SidebarHeader className="border-b border-slate-800/80 p-3 flex items-center justify-between">
+        <SidebarHeader className="border-b border-slate-800/80 p-2.5 flex items-center justify-between">
           <div
             onClick={() => router.push("/")}
-            className="flex items-center gap-2.5 cursor-pointer group px-1"
+            className="flex items-center gap-2.5 cursor-pointer group px-0.5"
           >
-            <div className="p-1 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-500/40 transition-colors flex items-center justify-center">
+            {/* Fixed Aspect Ratio Square Logo Box (Prevents Squishing) */}
+            <div className="size-8 aspect-square shrink-0 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-500/40 transition-colors flex items-center justify-center overflow-hidden">
               <Image
-                src="/logo.svg"
+                src="/logo.png"
                 alt="Multimodal AI Logo"
-                width={24}
-                height={24}
-                className="size-6 object-contain"
+                width={28}
+                height={28}
+                className="size-7 aspect-square shrink-0 object-contain"
               />
             </div>
             {!isCollapsed && (
-              <span className="font-bold text-sm text-white tracking-tight animate-in fade-in duration-200">
+              <span className="font-bold text-sm text-white tracking-tight animate-in fade-in duration-200 whitespace-nowrap">
                 Multimodal <span className="text-cyan-400">AI</span>
               </span>
             )}
@@ -83,7 +84,7 @@ export default function Sidenav() {
         </SidebarHeader>
 
         {/* Content Area */}
-        <SidebarContent className="p-2 space-y-3">
+        <SidebarContent className="p-2 space-y-2 overflow-x-hidden">
           {/* New Chat Button */}
           <SidebarGroup className="p-0">
             <SidebarMenu>
@@ -94,7 +95,7 @@ export default function Sidenav() {
                   className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-medium rounded-xl h-9 shadow-lg shadow-cyan-950/40 transition-all duration-200 flex items-center justify-center gap-2"
                 >
                   <Plus className="size-4 text-white flex-shrink-0" />
-                  {!isCollapsed && <span className="text-xs font-semibold">New Chat</span>}
+                  {!isCollapsed && <span className="text-xs font-semibold whitespace-nowrap">New Chat</span>}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -103,7 +104,7 @@ export default function Sidenav() {
           {/* Recent Conversations */}
           <SidebarGroup className="p-0">
             {!isCollapsed && (
-              <SidebarGroupLabel className="text-[10px] font-mono text-slate-500 uppercase tracking-wider px-2 py-1">
+              <SidebarGroupLabel className="text-[10px] font-mono text-slate-500 uppercase tracking-wider px-2 py-1 whitespace-nowrap">
                 Recent Conversations
               </SidebarGroupLabel>
             )}
@@ -117,9 +118,9 @@ export default function Sidenav() {
                   ))
                 ) : (
                   !isCollapsed && (
-                    <div className="text-center py-8 px-2">
-                      <MessageSquare className="size-5 text-slate-700 mx-auto mb-1.5" />
-                      <p className="text-xs text-slate-500">No recent chats</p>
+                    <div className="text-center py-6 px-2">
+                      <MessageSquare className="size-4 text-slate-700 mx-auto mb-1" />
+                      <p className="text-[11px] text-slate-500">No recent chats</p>
                     </div>
                   )
                 )}
@@ -138,7 +139,7 @@ export default function Sidenav() {
                     size="lg"
                     className="w-full hover:bg-slate-900 rounded-xl transition-colors text-left flex items-center gap-2.5 p-1.5"
                   >
-                    <Avatar className="size-7 border border-slate-700/60">
+                    <Avatar className="size-7 aspect-square shrink-0 border border-slate-700/60">
                       <AvatarFallback className="bg-cyan-950 text-cyan-400 text-xs font-bold border border-cyan-500/30">
                         {userInitial}
                       </AvatarFallback>

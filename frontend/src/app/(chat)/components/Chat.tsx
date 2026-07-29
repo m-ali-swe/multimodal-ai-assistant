@@ -155,10 +155,10 @@ export default function Chat({ threadId, initialMessages }: ChatProps) {
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full min-h-0 bg-[#090D17] text-slate-100 overflow-hidden">
+    <div className="flex-1 flex flex-col h-full max-h-screen min-h-0 bg-[#090D17] text-slate-100 overflow-hidden">
       <TopBar selectedModel={selectedModel} onModelChange={handleModelChange} />
 
-      <div className="flex-1 overflow-y-auto overflow-x-hidden relative">
+      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden relative">
         {currentThreadId === null && messages.length === 0 ? (
           <NewChat onSelectPrompt={handleSelectPrompt} />
         ) : (
@@ -174,7 +174,7 @@ export default function Chat({ threadId, initialMessages }: ChatProps) {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="border-t border-slate-800/80 bg-slate-950/40 backdrop-blur-xl">
+      <div className="flex-shrink-0 border-t border-slate-800/80 bg-slate-950/40 backdrop-blur-xl">
         <Input onSendMessage={sendMessage} isLoading={isLoading} onStopStream={stopStream} />
       </div>
     </div>
