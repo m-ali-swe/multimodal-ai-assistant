@@ -58,14 +58,13 @@ export default function Sidenav() {
 
   return (
     <>
-      <Sidebar collapsible="icon" className="border-r border-slate-800/80 bg-slate-950 text-slate-100 font-sans transition-[width,margin] duration-200 ease-in-out select-none">
+      <Sidebar collapsible="icon" className="border-r border-slate-800/80 bg-slate-950 text-slate-100 font-sans select-none">
         {/* Header / Logo */}
         <SidebarHeader className="border-b border-slate-800/80 p-2.5 flex items-center justify-between">
           <div
             onClick={() => router.push("/")}
             className="flex items-center gap-2.5 cursor-pointer group px-0.5"
           >
-            {/* Fixed Aspect Ratio Square Logo Box (Prevents Squishing) */}
             <div className="size-8 aspect-square shrink-0 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-500/40 transition-colors flex items-center justify-center overflow-hidden">
               <Image
                 src="/logo.png"
@@ -101,32 +100,30 @@ export default function Sidenav() {
             </SidebarMenu>
           </SidebarGroup>
 
-          {/* Recent Conversations */}
-          <SidebarGroup className="p-0">
-            {!isCollapsed && (
+          {/* Recent Conversations (Only shown when expanded) */}
+          {!isCollapsed && (
+            <SidebarGroup className="p-0">
               <SidebarGroupLabel className="text-[10px] font-mono text-slate-500 uppercase tracking-wider px-2 py-1 whitespace-nowrap">
                 Recent Conversations
               </SidebarGroupLabel>
-            )}
-            <SidebarGroupContent>
-              <SidebarMenu className="space-y-1">
-                {chats.length > 0 ? (
-                  chats.map((chat) => (
-                    <SidebarMenuItem key={chat.thread_id}>
-                      <ChatNameElem chat={chat} isCollapsed={isCollapsed} />
-                    </SidebarMenuItem>
-                  ))
-                ) : (
-                  !isCollapsed && (
+              <SidebarGroupContent>
+                <SidebarMenu className="space-y-1">
+                  {chats.length > 0 ? (
+                    chats.map((chat) => (
+                      <SidebarMenuItem key={chat.thread_id}>
+                        <ChatNameElem chat={chat} isCollapsed={false} />
+                      </SidebarMenuItem>
+                    ))
+                  ) : (
                     <div className="text-center py-6 px-2">
                       <MessageSquare className="size-4 text-slate-700 mx-auto mb-1" />
                       <p className="text-[11px] text-slate-500">No recent chats</p>
                     </div>
-                  )
-                )}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+                  )}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          )}
         </SidebarContent>
 
         {/* Footer / User Profile Trigger */}

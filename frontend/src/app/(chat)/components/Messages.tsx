@@ -1,6 +1,6 @@
 "use client"
 
-import { User, Brain } from "lucide-react"
+import { User, Bot, Brain } from "lucide-react"
 import MarkdownRenderer from "@/components/ui/markdown-renderer"
 import MessageActions from "@/components/ui/message-actions"
 
@@ -19,7 +19,7 @@ function ThinkingIndicator() {
   return (
     <div className="flex items-center gap-2 text-purple-400 text-xs font-mono mb-2 bg-purple-950/40 border border-purple-500/20 px-3 py-1.5 rounded-full w-fit animate-pulse">
       <Brain className="size-3.5 animate-spin" />
-      <span>Reasoning & Analyzing Multimodal Data...</span>
+      <span>Reasoning & Analyzing...</span>
     </div>
   )
 }
@@ -37,23 +37,18 @@ export default function Messages({ messages, selectedModel }: MessagesProps) {
               isHuman ? "justify-end" : "justify-start"
             }`}
           >
-            {/* AI Avatar */}
+            {/* Generic Chatbot Avatar */}
             {!isHuman && (
               <div className="flex-shrink-0 mt-0.5">
-                <div className="size-8 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shadow-md">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/favicon-32x32.png"
-                    alt="AI Avatar"
-                    className="size-5 object-contain"
-                  />
+                <div className="size-8 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shadow-md text-cyan-400">
+                  <Bot className="size-4" />
                 </div>
               </div>
             )}
 
             {/* Message Bubble Container */}
             <div className={`flex flex-col relative max-w-[90%] sm:max-w-[85%] ${isHuman ? "items-end" : "items-start"}`}>
-              {!isHuman && msg.streaming && selectedModel === "Reasoning" && (
+              {!isHuman && msg.streaming && selectedModel === "Reasoning" && (!msg.content || msg.content.length < 50) && (
                 <ThinkingIndicator />
               )}
 

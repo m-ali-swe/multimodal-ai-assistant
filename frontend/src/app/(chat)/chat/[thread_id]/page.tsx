@@ -1,15 +1,16 @@
 "use client";
-import React, { use, useEffect, useState } from 'react';
-import Chat from '../../components/Chat';
+import React, { use, useEffect, useState } from "react";
+import Chat from "../../components/Chat";
+import { Loader2 } from "lucide-react";
 
-interface ChatPageProps{
-  params:Promise<{
-    thread_id:string
+interface ChatPageProps {
+  params: Promise<{
+    thread_id: string
   }>
 }
 
-export default function ChatPage({ params }:ChatPageProps) {
-  const resolvedParams=use(params)
+export default function ChatPage({ params }: ChatPageProps) {
+  const resolvedParams = use(params);
   const { thread_id } = resolvedParams;
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,12 +20,11 @@ export default function ChatPage({ params }:ChatPageProps) {
       if (!thread_id) return;
       setIsLoading(true);
       try {
-        // const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/chat/history/${thread_id}`,{
-        const response = await fetch(`/api/chat/history/${thread_id}`,{
-          credentials:"include"
+        const response = await fetch(`/api/chat/history/${thread_id}`, {
+          credentials: "include"
         });
         const data = await response.json();
-        setMessages(data.messages);
+        setMessages(data.messages || []);
       } catch (error) {
         console.error("Failed to fetch chat history:", error);
       } finally {
@@ -37,16 +37,16 @@ export default function ChatPage({ params }:ChatPageProps) {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p>Loading chat history...</p>
+      <div className="flex flex-col items-center justify-center h-full w-full bg-[#090D17] text-slate-400 gap-2 font-mono text-xs">
+        <Loader2 className="size-5 animate-spin text-cyan-400" />
+        <span>Loading workspace thread...</span>
       </div>
     );
   }
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+    <div className="h-full w-full bg-[#090D17]">
       <Chat threadId={thread_id} initialMessages={messages} />
     </div>
   );
 }
-
