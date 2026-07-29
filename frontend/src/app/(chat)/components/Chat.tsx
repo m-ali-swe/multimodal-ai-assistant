@@ -2,16 +2,10 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useChats } from "../context/ChatContext"
-import Messages from "./Messages"
+import Messages, { AttachedFile, Message } from "./Messages"
 import Input from "./Input"
 import NewChat from "./NewChat"
 import TopBar from "@/components/ui/top-bar"
-
-interface Message {
-  role: "human" | "ai" | "system"
-  content: string
-  streaming?: boolean
-}
 
 interface ChatProps {
   threadId: string | null
@@ -57,7 +51,23 @@ export default function Chat({ threadId, initialMessages }: ChatProps) {
   const sendMessage = async (formData: FormData) => {
     controllerRef.current = new AbortController()
     const signal = controllerRef.current.signal
-    setMessages((prev) => [...prev, { role: "human", content: formData.get("query") as string }])
+
+    // Extract file attachment metadata for session display
+    const rawFiles = formData.getAll("files") as File[]
+    const attachments: AttachedFile[] = rawFiles.map((f) => ({
+      name: f.name,
+      type: f.type || f.name.split(".").pop() || "file",
+      size: f.size,
+    }))
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "human",
+        content: (formData.get("query") as string) || "",
+        attachments: attachments.length > 0 ? attachments : undefined,
+      },
+    ])
     setMessages((prev) => [...prev, { role: "ai", content: "", streaming: true }])
     setIsLoading(true)
     setStreamStatus("")
