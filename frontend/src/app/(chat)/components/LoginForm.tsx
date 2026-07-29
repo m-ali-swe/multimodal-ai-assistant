@@ -3,7 +3,6 @@
 import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, AlertCircle, FileText, FileSpreadsheet, Presentation, Image as ImageIcon, FileCode } from "lucide-react"
 import { toast } from "sonner"
 
@@ -67,12 +66,11 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       {/* Brand & Multimodal Identity Header with Favicon */}
       <div className="flex flex-col items-center text-center space-y-2">
         <Link href="/" className="inline-flex items-center gap-2.5 group focus:outline-none">
-          <div className="p-2 rounded-xl bg-slate-900 border border-slate-800 shadow-lg shadow-cyan-950/30 group-hover:border-cyan-500/50 transition-all duration-300">
-            <Image
+          <div className="p-2 rounded-xl bg-slate-900 border border-slate-800 shadow-lg shadow-cyan-950/30 group-hover:border-cyan-500/50 transition-all duration-300 flex items-center justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src="/favicon-32x32.png"
-              alt="Multimodal AI Assistant"
-              width={28}
-              height={28}
+              alt="Multimodal AI Icon"
               className="size-7 object-contain"
             />
           </div>
