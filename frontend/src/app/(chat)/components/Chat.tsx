@@ -162,7 +162,7 @@ export default function Chat({ threadId, initialMessages }: ChatProps) {
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full max-h-screen min-h-0 bg-[#090D17] text-slate-100 overflow-hidden">
+    <div className="flex-1 flex flex-col h-full max-h-screen min-h-0 bg-[#070A11] bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(6,182,212,0.06),rgba(255,255,255,0))] text-slate-100 overflow-hidden relative">
       <TopBar selectedModel={selectedModel} onModelChange={handleModelChange} />
 
       <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden relative">

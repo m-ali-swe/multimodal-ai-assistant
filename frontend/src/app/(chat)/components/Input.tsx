@@ -189,7 +189,7 @@ export default function Input({ onSendMessage, isLoading, onStopStream }: InputP
             className="w-full bg-transparent border-0 focus:outline-none text-slate-100 placeholder:text-slate-500 resize-none min-h-[28px] max-h-32 overflow-y-auto text-xs sm:text-sm leading-relaxed px-1"
           />
 
-          {/* Bottom Action Bar: Centered Paperclip & Send Buttons */}
+          {/* Bottom Action Bar */}
           <div className="flex items-center justify-between pt-1 border-t border-slate-800/40">
             <div className="flex items-center gap-2">
               <input
@@ -209,9 +209,6 @@ export default function Input({ onSendMessage, isLoading, onStopStream }: InputP
               >
                 <Paperclip className="size-4" />
               </label>
-              <span className="text-[10px] text-slate-500 font-mono hidden sm:inline">
-                {files.length > 0 ? `${files.length}/10 attached` : "Attach up to 10 files"}
-              </span>
             </div>
 
             <div className="flex items-center gap-1.5">

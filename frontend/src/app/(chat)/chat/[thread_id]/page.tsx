@@ -46,7 +46,7 @@ export default function ChatPage({ params }: ChatPageProps) {
 
   return (
     <div className="h-full w-full bg-[#090D17]">
-      <Chat threadId={thread_id} initialMessages={messages} />
+      <Chat key={thread_id} threadId={thread_id} initialMessages={messages} />
     </div>
   );
 }

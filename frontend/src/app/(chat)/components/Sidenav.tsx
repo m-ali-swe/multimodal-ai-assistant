@@ -67,7 +67,8 @@ export default function Sidenav() {
             <div className="size-8 aspect-square shrink-0 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-500/40 transition-colors flex items-center justify-center overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/logo.png"
+                src="/android-chrome-192x192.png"
+                onError={(e) => { e.currentTarget.src = "/favicon-32x32.png" }}
                 alt="Multimodal AI Logo"
                 className="size-7 aspect-square shrink-0 object-contain"
               />

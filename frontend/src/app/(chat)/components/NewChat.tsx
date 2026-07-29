@@ -41,11 +41,12 @@ export default function NewChat({ onSelectPrompt }: NewChatProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] h-full w-full px-4 py-2 max-w-2xl sm:max-w-3xl mx-auto select-none overflow-hidden my-auto">
       {/* Hero Header */}
-      <div className="text-center space-y-1.5 mb-3">
-        <div className="inline-flex items-center justify-center p-1.5 rounded-xl bg-slate-900 border border-slate-800 shadow-md">
+      <div className="text-center space-y-1.5 mb-4">
+        <div className="inline-flex items-center justify-center p-2 rounded-xl bg-slate-900 border border-slate-800 shadow-md">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/logo.png"
+            src="/android-chrome-192x192.png"
+            onError={(e) => { e.currentTarget.src = "/favicon-32x32.png" }}
             alt="Multimodal AI Architect"
             className="size-8 object-contain"
           />
@@ -58,25 +59,6 @@ export default function NewChat({ onSelectPrompt }: NewChatProps) {
         <p className="text-[11px] sm:text-xs text-slate-400 max-w-md mx-auto leading-normal">
           High-performance AI assistant for documents, presentations, spreadsheets, vision assets, and code.
         </p>
-
-        {/* Format Badges */}
-        <div className="flex items-center justify-center flex-wrap gap-1 pt-0.5 text-[10px] font-mono text-slate-400">
-          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2 py-0.5 rounded border border-slate-800 text-slate-300">
-            <Presentation className="size-3 text-orange-400" /> PPTX
-          </span>
-          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2 py-0.5 rounded border border-slate-800 text-slate-300">
-            <FileText className="size-3 text-blue-400" /> DOCX
-          </span>
-          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2 py-0.5 rounded border border-slate-800 text-slate-300">
-            <FileSpreadsheet className="size-3 text-emerald-400" /> XLSX
-          </span>
-          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2 py-0.5 rounded border border-slate-800 text-slate-300">
-            <ImageIcon className="size-3 text-purple-400" /> Images
-          </span>
-          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2 py-0.5 rounded border border-slate-800 text-slate-300">
-            <FileCode className="size-3 text-cyan-400" /> Code
-          </span>
-        </div>
       </div>
 
       {/* Starter Cards Grid */}
