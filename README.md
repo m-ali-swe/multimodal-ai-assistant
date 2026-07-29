@@ -11,17 +11,16 @@
 
 ---
 
-## 📸 Visual Showcase & Recommended Screenshots
+## 🖼️ Application Interface Gallery
 
-To give visitors and recruiters an instant visual overview of the application, we recommend including the following key screenshots in your repository:
+### 1. Main Multimodal AI Architect Workspace
+![Multimodal AI Architect Workspace](frontend/public/hero-dashboard-preview.png)
 
-| Section | Recommended Content | Description |
-| :--- | :--- | :--- |
-| **1. Main Workspace** | `NewChat` Landing View | Hero title, model selection dropdown ("Standard Fast" vs "Reasoning Deep"), starter prompt cards, and bottom prompt bar. |
-| **2. Multimodal Processing** | Attached File Analysis | Chat session showing attached documents (`.pptx`, `.xlsx`, `.docx`, or images) attached in the input bar and analyzed by the assistant. |
-| **3. Reasoning & Code** | Reasoning Mode & Code Block | Active chat in Reasoning Mode showing cyan `Reasoning & Analyzing...` status badge and styled code syntax highlighting. |
-| **4. Thread Sidebar** | Shadcn UI Sidebar Navigation | Expanded sidebar showing recent threads, 1-click collapse rail, and user profile dropdown. |
-| **5. Authentication** | Clean Auth Form | Login / Signup modal with 1-click Guest Trial access. |
+### 2. Document Analysis & Agentic Reasoning Chat Session
+![Document Summary & Reasoning Chat](frontend/public/document-reasoning-chat.png)
+
+### 3. Authentication & Access Portal
+![Authentication Portal](frontend/public/login-auth-view.png)
 
 ---
 
@@ -122,7 +121,11 @@ multimodal-ai-assistant/
     ├── src/
     │   ├── app/                      # Next.js App Router (auth pages, chat UI, API rewrites)
     │   └── components/               # Shadcn UI primitives, TopBar & Markdown renderer
-    ├── public/                       # Static branding assets & icons
+    ├── public/                       # Screenshots & branding assets
+    │   ├── hero-dashboard-preview.png# Main workspace screenshot
+    │   ├── document-reasoning-chat.png# Document chat screenshot
+    │   ├── login-auth-view.png       # Auth form screenshot
+    │   └── logo.svg
     ├── package.json                  # Frontend dependencies
     └── next.config.ts                # Next.js configuration & API proxies
 ```
