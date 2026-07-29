@@ -1,32 +1,46 @@
-# 🚀 Multimodal AI Assistant — Full-Stack Conversational Intelligence Platform
+# 🚀 Multimodal AI Assistant — Enterprise Conversational Intelligence Platform
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.5-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.116-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![LangGraph](https://img.shields.io/badge/LangGraph-0.6.6-FF6F61?style=for-the-badge)](https://www.langchain.com/langgraph)
-[![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.5_Flash-4285F4?style=for-the-badge&logo=google-gemini)](https://ai.google.dev/)
+[![Google Gemini](https://img.shields.io/badge/Google_Gemini-2.0_Flash-4285F4?style=for-the-badge&logo=google-gemini)](https://ai.google.dev/)
+[![Shadcn UI](https://img.shields.io/badge/Shadcn_UI-Latest-000000?style=for-the-badge)](https://ui.shadcn.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-4169E1?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
 
-**Multimodal AI Assistant** is an enterprise-grade, full-stack conversational platform inspired by ChatGPT and Google Gemini. Built with a **Next.js 15 (Turbopack)** frontend and a high-throughput **FastAPI** backend, it delivers real-time NDJSON token streaming, stateful agentic workflows orchestrated via **LangGraph**, in-memory multi-format document ingestion (PDF, DOCX, PPTX), and persistent thread checkpointing backed by **PostgreSQL**.
+**Multimodal AI Assistant** is a high-performance, full-stack conversational intelligence platform inspired by enterprise AI workspace environments like ChatGPT and Google Gemini. Powered by a **Next.js 15 (Turbopack)** frontend with **Shadcn UI** components and a high-throughput **FastAPI** backend, it features NDJSON token streaming, stateful agentic workflows orchestrated via **LangGraph**, in-memory multi-format document ingestion (PPTX, DOCX, XLSX, PDF, Images, Code), and persistent thread checkpointing backed by **PostgreSQL**.
+
+---
+
+## 📸 Visual Showcase & Recommended Screenshots
+
+To give visitors and recruiters an instant visual overview of the application, we recommend including the following key screenshots in your repository:
+
+| Section | Recommended Content | Description |
+| :--- | :--- | :--- |
+| **1. Main Workspace** | `NewChat` Landing View | Hero title, model selection dropdown ("Standard Fast" vs "Reasoning Deep"), starter prompt cards, and bottom prompt bar. |
+| **2. Multimodal Processing** | Attached File Analysis | Chat session showing attached documents (`.pptx`, `.xlsx`, `.docx`, or images) attached in the input bar and analyzed by the assistant. |
+| **3. Reasoning & Code** | Reasoning Mode & Code Block | Active chat in Reasoning Mode showing cyan `Reasoning & Analyzing...` status badge and styled code syntax highlighting. |
+| **4. Thread Sidebar** | Shadcn UI Sidebar Navigation | Expanded sidebar showing recent threads, 1-click collapse rail, and user profile dropdown. |
+| **5. Authentication** | Clean Auth Form | Login / Signup modal with 1-click Guest Trial access. |
 
 ---
 
 ## 🌟 Key Architectural Capabilities
 
-- 📄 **Stateless In-Memory Document Ingestion**: Upload and query complex documents including **PDFs**, **Microsoft Word (`.docx`)**, **PowerPoint (`.pptx`)**, and **plain text files**. Binary streams are extracted in memory via `io.BytesIO` and injected directly into the Gemini prompt context without disk I/O latency.
-- ⚡ **Real-Time Event Streaming**: Asynchronous HTTP streaming using `StreamingResponse` and NDJSON event generators yields low-latency, typewriter-style token streaming with instant client cancellation handling.
+- 📄 **Stateless In-Memory Multi-Format Ingestion**: Upload up to 10 files per message including **PowerPoint (`.pptx`)**, **Word (`.docx`)**, **Excel (`.xlsx`)**, **PDFs**, **Images (Vision)**, and **Source Code files**. Files are parsed directly in RAM via `io.BytesIO` and injected into the Gemini context window without disk I/O latency.
+- ⚡ **Real-Time Event Streaming**: Asynchronous HTTP streaming using `StreamingResponse` and NDJSON event generators yields low-latency token streaming with instant cancellation handling.
 - 🧠 **LangGraph Stateful Agent Architecture**:
-  - **Thread-Level Checkpointing**: Stateful conversation tracking backed by `AsyncPostgresSaver` and asynchronous connection pools (`psycopg_pool`).
-  - **Automatic Context Summarization**: Automatically condenses earlier message turns once thread history exceeds 20 messages, pruning state via `RemoveMessage` primitives to preserve LLM token limits while keeping long-term memory intact.
-  - **Agentic Tool Execution**: Dynamic node routing based on model tool calls (e.g. real-time web search integration).
+  - **Thread-Level Checkpointing**: Stateful conversation tracking backed by `AsyncPostgresSaver` and connection pools (`psycopg_pool`).
+  - **Automatic Context Summarization**: Automatically condenses thread history when messages exceed limits, preserving LLM context windows while keeping memory intact.
+  - **Dual Model Selection**: Dynamically switch between **Standard Fast Model** and **Reasoning Deep Model** for step-by-step analytical reasoning.
 - 🔐 **Cross-Origin Session Security & 1-Click Guest Trial**:
   - Stateful JWT authentication with bcrypt password hashing (`passlib`).
   - HTTP-Only `SameSite=None` secure cookie handling supporting cross-domain deployments (`vercel.app`).
-  - **1-Click Guest Mode**: Generates temporary UUID guest profiles for instant trial access without registration friction.
-- 🎨 **ChatGPT-Style Next.js 15 UI**:
-  - Responsive dark-mode interface built with Next.js 15 App Router, React 19, and Tailwind CSS v4.
-  - Full Markdown rendering (`react-markdown`) with syntax highlighting (`react-syntax-highlighter`) for code blocks.
-  - Dynamic sidebar for managing active threads (create, rename, delete, switch histories).
+  - **1-Click Guest Mode**: Instant trial access generating temporary UUID guest profiles without registration friction.
+- 🎨 **Enterprise Dark Obsidian UI (Shadcn UI & Tailwind CSS v4)**:
+  - Custom dark theme with cyan/slate accents and ambient lighting mesh.
+  - **Official Shadcn UI Sidebar**: Icon rail collapsing (`collapsible="icon"`) with tooltips and zero layout shifts.
+  - Custom Markdown renderer with Prism syntax highlighting for code blocks.
 
 ---
 
@@ -35,7 +49,7 @@
 ```text
 ┌────────────────────────────────────────────────────────────────────────┐
 │                        USER BROWSER / CLIENT                           │
-│                 (React 19 / Tailwind CSS v4 UI)                        │
+│                 (React 19 / Shadcn UI / Tailwind CSS v4)                │
 └──────────────────────────────────┬─────────────────────────────────────┘
                                    │ HTTP-Only Cookies & SSE Streaming
                                    ▼
@@ -46,7 +60,7 @@
                                    ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │                    FASTAPI BACKEND INFRASTRUCTURE                      │
-│            (Auth Engine / PyPDF2 / Docx / PPTX Ingestion)             │
+│      (Auth Engine / PyPDF2 / Docx / PPTX / OpenPyXL Ingestion)         │
 └──────────────────────────────────┬─────────────────────────────────────┘
                                    │ Stateful Flow Dispatch
                                    ▼
@@ -57,36 +71,14 @@
                    │                               │
                    ▼                               ▼
 ┌───────────────────────────────────┐ ┌──────────────────────────────────┐
-│   POSTGRESQL DATABASE             │ │   GOOGLE GEMINI 3.5 FLASH API    │
+│   POSTGRESQL DATABASE             │ │   GOOGLE GEMINI 2.0 FLASH API    │
 │   (Async Checkpoint Saver Memory) │ │   (Multimodal LLM Inference)     │
 └───────────────────────────────────┘ └──────────────────────────────────┘
 ```
 
 ---
 
-## ⚡ Engineering Challenges & Technical Solutions
-
-### 1. Low-Latency NDJSON Token Streaming with Client Cancellation
-* **Challenge**: Standard HTTP response buffering delays AI responses until the entire model output is generated, causing poor UX during long explanations.
-* **Solution**: Implemented an async event generator wrapped in FastAPI's `StreamingResponse(media_type="application/x-ndjson")`. The server streams JSON event chunks (`{"type": "content", "response": "..."}`) using LangGraph's `astream_events(version="v2")`. Client disconnects trigger an `asyncio.CancelledError` handler to gracefully abort active Gemini API calls and prevent background resource leaks.
-
-### 2. Context Window Optimization via LangGraph Message Pruning
-* **Challenge**: Extended chat sessions accumulate high token counts, exceeding context windows and increasing LLM API costs.
-* **Solution**: Designed a conditional routing node `should_continue` inside the LangGraph workflow. When thread length exceeds 20 messages, execution automatically diverts to a `summarize_conversation` node. The node invokes Gemini to generate a concise summary of prior context, prepends the summary as a `SystemMessage`, and emits `RemoveMessage` instructions to prune historical messages from PostgreSQL memory while preserving conversation context.
-
-### 3. In-Memory Document Ingestion without Disk I/O Bottlenecks
-* **Challenge**: Uploading large multi-format files (PDF, Word, PPTX) to server disk drives creates I/O bottlenecks and file system cleanup requirements in serverless or containerized environments.
-* **Solution**: Developed an in-memory document parsing engine (`process_files`). Incoming `UploadFile` streams are processed directly in RAM via `io.BytesIO`. `PyPDF2`, `python-docx`, and `python-pptx` extract text elements synchronously, formatting extracted text blocks into structured prompt parts that are appended directly to the `HumanMessage` payload.
-
-### 4. Cross-Origin HTTP-Only Cookie Authentication
-* **Challenge**: Browsers block third-party authentication cookies across separate frontend (`vercel.app`) and backend origins.
-* **Solution**: Standardized JWT session token delivery using `JSONResponse.set_cookie()` with `httponly=True`, `secure=True`, and `samesite="none"`. Configured FastAPI `CORSMiddleware` with explicit `allow_origins` parsing, enabling seamless cookie persistence across cross-domain environments.
-
----
-
-## 📊 Database & Payload Schemas
-
-### Relational Schema (PostgreSQL & SQLAlchemy)
+## 📊 Database Schema (PostgreSQL & SQLAlchemy)
 
 ```
 +------------------------------------+        +------------------------------------+
@@ -94,10 +86,10 @@
 +------------------------------------+        +------------------------------------+
 | id (PK, String/UUID)               |<------1| thread_id (PK, String/UUID)       |
 | email (Unique, String)             |       | user_id (FK -> User.id)            |
-| hashed_password (String)           |        | chat_name (String)                 |
-| created_at (Timestamp)             |        | created_at (Timestamp)             |
-+------------------------------------+        +------------------------------------+
-                                                                |
+| name (String, Nullable)            |        | chat_name (String)                 |
+| hashed_password (String)           |        | created_at (Timestamp)             |
+| created_at (Timestamp)             |        +------------------------------------+
++------------------------------------+                          |
                                                                 | 1:N
                                                                 v
                                               +------------------------------------+
@@ -117,27 +109,27 @@
 
 ```
 multimodal-ai-assistant/
-├── chatbot_backend/                  # FastAPI backend service
+├── backend/                          # FastAPI backend service
 │   ├── src/
-│   │   └── chatbot_backend/
-│   │       ├── main.py               # FastAPI application, streaming endpoints & LangGraph workflow
-│   │       ├── db.py                 # SQLAlchemy models, PostgreSQL pool & session generator
-│   │       └── service.py            # JWT generation, password hashing & user services
-│   ├── pyproject.toml                # Dependencies & build manifest (uv / hatchling)
-│   ├── requirements.txt              # Backend requirements manifest
-│   └── .env.example                  # Backend environment variable template
+│   │   └── backend/
+│   │       ├── main.py               # FastAPI application, streaming endpoints & LangGraph graph
+│   │       ├── db.py                 # SQLAlchemy models (User, Chats) & PostgreSQL pool
+│   │       └── service.py            # JWT authentication & user services
+│   ├── pyproject.toml                # Build manifest
+│   └── requirements.txt              # Backend dependencies
 │
-└── chatbot_frontend/                 # Next.js 15 web application
+└── frontend/                         # Next.js 15 web application
     ├── src/
-    │   ├── app/                      # Next.js App Router (auth pages, chat UI, API clients)
-    │   └── components/               # UI components & Markdown parsers
-    ├── package.json                  # Dependencies & npm scripts
-    └── next.config.ts                # Next.js configuration
+    │   ├── app/                      # Next.js App Router (auth pages, chat UI, API rewrites)
+    │   └── components/               # Shadcn UI primitives, TopBar & Markdown renderer
+    ├── public/                       # Static branding assets & icons
+    ├── package.json                  # Frontend dependencies
+    └── next.config.ts                # Next.js configuration & API proxies
 ```
 
 ---
 
-## 🛠️ Local Development & Deployment Setup
+## 🛠️ Local Development Setup
 
 ### Prerequisites
 - **Python**: `3.11+`
@@ -151,7 +143,7 @@ multimodal-ai-assistant/
 
 1. **Navigate to backend directory**:
    ```bash
-   cd chatbot_backend
+   cd backend
    ```
 
 2. **Create & activate virtual environment**:
@@ -169,7 +161,7 @@ multimodal-ai-assistant/
    ```
 
 4. **Configure Environment Variables**:
-   Create a `.env` file in `chatbot_backend/` based on `.env.example`:
+   Create a `.env` file in `backend/`:
    ```env
    GEMINI_API_KEY="your_google_gemini_api_key"
    GEMINI_MODEL="gemini-2.0-flash"
@@ -179,9 +171,9 @@ multimodal-ai-assistant/
 
 5. **Start FastAPI Backend Engine**:
    ```bash
-   uvicorn src.chatbot_backend.main:app --reload --port 8000
+   uvicorn src.backend.main:app --reload --port 8000
    ```
-   The backend API will run at `http://localhost:8000`. API documentation at `http://localhost:8000/docs`.
+   The backend runs at `http://localhost:8000`. API docs available at `http://localhost:8000/docs`.
 
 ---
 
@@ -189,7 +181,7 @@ multimodal-ai-assistant/
 
 1. **Navigate to frontend directory**:
    ```bash
-   cd ../chatbot_frontend
+   cd ../frontend
    ```
 
 2. **Install dependencies**:
@@ -198,7 +190,7 @@ multimodal-ai-assistant/
    ```
 
 3. **Configure Environment Variables**:
-   Create a `.env.local` file in `chatbot_frontend/`:
+   Create a `.env.local` file in `frontend/`:
    ```env
    NEXT_PUBLIC_BACKEND_URL="http://localhost:8000"
    ```
@@ -215,13 +207,13 @@ multimodal-ai-assistant/
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `POST` | `/auth/signup` | Register a new user account with hashed password |
+| `POST` | `/auth/signup` | Register user account with name, email, and password |
 | `POST` | `/auth/login` | Authenticate user and receive HTTP-Only cookie |
 | `GET` | `/guest_login` | Instant 1-click guest authentication session |
-| `GET` | `/auth/logout` | Clear user cookies and end session |
-| `POST` | `/new_chat_stream` | Initialize a new chat thread, upload files, and stream response |
-| `POST` | `/chat_stream` | Continue existing thread streaming with optional attachments |
-| `GET` | `/all_chats` | Retrieve all chat history threads for authenticated user |
-| `GET` | `/chat/history/{thread_id}` | Fetch full message history for a specific thread |
-| `GET` | `/rename_chat` | Rename a chat thread title |
-| `GET` | `/delete_chat` | Delete a chat thread and associated data |
+| `GET` | `/auth/logout` | Clear user cookies and terminate session |
+| `POST` | `/new_chat_stream` | Initialize new thread, upload up to 10 files, stream AI response |
+| `POST` | `/chat_stream` | Continue streaming message turn with optional file attachments |
+| `GET` | `/all_chats` | Retrieve all chat history threads for user |
+| `GET` | `/chat/history/{thread_id}` | Fetch full message history for specific thread |
+| `GET` | `/rename_chat` | Rename chat thread title |
+| `GET` | `/delete_chat` | Delete chat thread and associated data |
