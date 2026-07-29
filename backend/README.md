@@ -27,7 +27,8 @@ Create a `.env` file inside `chatbot_backend/`:
 
 ```env
 GEMINI_API_KEY="your_google_gemini_api_key"
-DB_URI="postgresql://username:password@localhost:5432/database_name"
+GEMINI_MODEL="gemini-3.5-flash"
+DB_URI="postgresql://username:password@localhost:5432/your_database_name"
 ALLOWED_ORIGINS="http://localhost:3000"
 ```
 
