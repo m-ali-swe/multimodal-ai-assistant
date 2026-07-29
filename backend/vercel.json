@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/chatbot_backend/main.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "src/chatbot_backend/main.py"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/new_chat_stream",
+      "headers": [
+        { "key": "X-Accel-Buffering", "value": "no" },
+        { "key": "Transfer-Encoding", "value": "chunked" }
+      ]
+    }
+  ]
+}
