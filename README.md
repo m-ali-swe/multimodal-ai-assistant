@@ -70,7 +70,7 @@
                    │                               │
                    ▼                               ▼
 ┌───────────────────────────────────┐ ┌──────────────────────────────────┐
-│   POSTGRESQL DATABASE             │ │   GOOGLE GEMINI 2.0 FLASH API    │
+│   POSTGRESQL DATABASE             │ │   GOOGLE GEMINI 3.5 FLASH API    │
 │   (Async Checkpoint Saver Memory) │ │   (Multimodal LLM Inference)     │
 └───────────────────────────────────┘ └──────────────────────────────────┘
 ```
@@ -167,7 +167,7 @@ multimodal-ai-assistant/
    Create a `.env` file in `backend/`:
    ```env
    GEMINI_API_KEY="your_google_gemini_api_key"
-   GEMINI_MODEL="gemini-2.0-flash"
+   GEMINI_MODEL="gemini-3.5-flash"
    DB_URI="postgresql://username:password@localhost:5432/your_database_name"
    ALLOWED_ORIGINS="http://localhost:3000"
    ```
