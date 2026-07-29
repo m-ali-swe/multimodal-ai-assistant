@@ -20,7 +20,6 @@ import io
 import uuid
 import logging
 from src.backend.db import get_db, Session, Chats, User
-from src.backend.service import get_user, signup_user
 
 # -----------------------------------------------------------------------------
 # Structured Logging Setup
@@ -159,19 +158,16 @@ app.add_middleware(
 
 
 # -----------------------------------------------------------------------------
-# Document Processing Helper
+# Document Processing Helper (100% In-Memory Parsing)
 # -----------------------------------------------------------------------------
 async def process_files(files: List[UploadFile] = File(...)):
     message_parts = []
     for file in files:
-        file_name = file.filename
         content_type = file.content_type
         content = await file.read()
 
         if content_type.startswith("application/pdf"):
-            with open(file_name, "wb") as f:
-                f.write(content)
-            reader = PdfReader(file_name)
+            reader = PdfReader(io.BytesIO(content))
             text = "Data from PDF : " + "\n".join(page.extract_text() for page in reader.pages)
             message_parts.append({"type": "text", "text": text})
 
