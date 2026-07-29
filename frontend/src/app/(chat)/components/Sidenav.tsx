@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { useChats } from "../context/ChatContext"
 import ChatNameElem from "./ChatNameElem"
 import { MessageSquare, Plus, LogOut, User } from "lucide-react"
@@ -33,9 +32,12 @@ import {
 export default function Sidenav() {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const { chats, userInfo } = useChats()
-  const router = useRouter()
   const { state } = useSidebar()
   const isCollapsed = state === "collapsed"
+
+  const handleNewChat = () => {
+    window.location.href = "/"
+  }
 
   const handleLogout = async () => {
     try {
@@ -61,7 +63,7 @@ export default function Sidenav() {
         {/* Header / Logo */}
         <SidebarHeader className="border-b border-slate-800/80 p-2.5 flex items-center justify-between">
           <div
-            onClick={() => router.push("/")}
+            onClick={handleNewChat}
             className="flex items-center gap-2.5 cursor-pointer group px-0.5"
           >
             <div className="size-8 aspect-square shrink-0 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-500/40 transition-colors flex items-center justify-center overflow-hidden">
@@ -88,7 +90,7 @@ export default function Sidenav() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  onClick={() => router.push("/")}
+                  onClick={handleNewChat}
                   tooltip="New Chat"
                   className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-medium rounded-xl h-9 shadow-lg shadow-cyan-950/40 transition-all duration-200 flex items-center justify-center gap-2"
                 >
