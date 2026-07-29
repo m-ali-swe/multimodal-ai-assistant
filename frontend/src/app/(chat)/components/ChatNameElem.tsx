@@ -1,4 +1,5 @@
 "use client"
+
 import Link from "next/link"
 import { useChats } from "../context/ChatContext"
 import { Edit2, Trash2, MessageSquare } from "lucide-react"
@@ -29,35 +30,31 @@ import { useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-interface Message{
-  id:number
-  thread_id:string
-  chat_name:string
+interface Message {
+  id: number
+  thread_id: string
+  chat_name: string
 }
 
-interface ChatNameProps{
-  chat:Message
+interface ChatNameProps {
+  chat: Message
+  isCollapsed?: boolean
 }
 
-export default function ChatNameElem({ chat }:ChatNameProps) {
+export default function ChatNameElem({ chat, isCollapsed = false }: ChatNameProps) {
   const { setChats } = useChats()
   const router = useRouter()
   const [newName, setNewName] = useState(chat.chat_name)
   const pathname = usePathname()
-  const isCurrent= pathname === `/chat/${chat.thread_id}`
+  const isCurrent = pathname === `/chat/${chat.thread_id}`
 
   const handleRename = async () => {
     if (!newName) return
-    chat.chat_name=newName
+    chat.chat_name = newName
     try {
-      await fetch(
-        `/api/rename_chat?thread_id=${chat.thread_id}&new_name=${newName}`
-        // `${process.env.NEXT_PUBLIC_BACKEND_URL}/rename_chat?thread_id=${chat.thread_id}&new_name=${newName}`
-      )
+      await fetch(`/api/rename_chat?thread_id=${chat.thread_id}&new_name=${encodeURIComponent(newName)}`)
       setChats((prev) =>
-        prev.map((c) =>
-          c.thread_id === chat.thread_id ? { ...c, chat_name: newName } : c
-        )
+        prev.map((c) => (c.thread_id === chat.thread_id ? { ...c, chat_name: newName } : c))
       )
     } catch (error) {
       console.error("Failed to rename chat:", error)
@@ -66,10 +63,9 @@ export default function ChatNameElem({ chat }:ChatNameProps) {
 
   const handleDelete = async () => {
     try {
-      // await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/delete_chat?thread_id=${chat.thread_id}`)
       await fetch(`/api/delete_chat?thread_id=${chat.thread_id}`)
       setChats((prev) => prev.filter((c) => c.thread_id !== chat.thread_id))
-      
+
       if (pathname === `/chat/${chat.thread_id}`) {
         router.push("/")
       }
@@ -79,110 +75,129 @@ export default function ChatNameElem({ chat }:ChatNameProps) {
   }
 
   return (
-    <div className={`${isCurrent?"bg-gradient-to-r from-purple-600/20 via-blue-600/20 to-purple-600/20 border-purple-500/30":""} group flex items-center justify-between p-3 rounded-xl hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 transition-all duration-200 border border-transparent hover:border-purple-500/20`}>
+    <div
+      className={`group flex items-center justify-between p-2 sm:p-2.5 rounded-xl transition-all duration-200 border ${
+        isCurrent
+          ? "bg-slate-900 border-cyan-500/40 text-white shadow-md shadow-cyan-950/20"
+          : "bg-transparent border-transparent text-slate-400 hover:bg-slate-900/60 hover:text-slate-200"
+      }`}
+    >
       {/* Chat Link */}
-      <div className="flex items-center gap-3 flex-1 min-w-0">
-        <div className="w-8 h-8 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-          <MessageSquare className="w-4 h-4 text-purple-300" />
-        </div>
-        <Link
-          href={`/chat/${chat.thread_id}`}
-          className="flex-1 text-sidebar-foreground hover:text-white truncate text-sm font-medium transition-colors"
+      <Link
+        href={`/chat/${chat.thread_id}`}
+        className="flex items-center gap-2.5 flex-1 min-w-0"
+      >
+        <div
+          className={`size-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
+            isCurrent ? "bg-cyan-950 border border-cyan-500/30 text-cyan-400" : "bg-slate-900 text-slate-500 group-hover:text-slate-300"
+          }`}
         >
-          {chat.chat_name}
-        </Link>
-      </div>
+          <MessageSquare className="size-3.5" />
+        </div>
+        {!isCollapsed && (
+          <span className="flex-1 truncate text-xs font-medium tracking-tight">
+            {chat.chat_name}
+          </span>
+        )}
+      </Link>
 
       {/* Action Buttons */}
-      <div className="flex gap-1 md:opacity-0 group-hover:opacity-100 transition-opacity">
-        {/* RENAME DIALOG */}
-        
-        <Dialog onOpenChange={(open:boolean)=>{
-          if (!open){
-            setTimeout(() => {
-              setNewName(chat.chat_name)
-            }, 100);
-          }
-        }}>
-          <TooltipProvider>
-            <Tooltip>
-              <DialogTrigger asChild>
-                <TooltipTrigger asChild>
-                  <button type="button"
-                  aria-label="Rename chat"
-                  className="p-2 text-sidebar-foreground/60 hover:text-purple-300 hover:bg-purple-500/10 rounded-lg transition-all duration-200">
-                    <Edit2 className="w-3 h-3" />
-                  </button>
-                </TooltipTrigger>
-              </DialogTrigger>
-              <TooltipContent>
-                <p>Rename Chat</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Rename Chat</DialogTitle>
-              <DialogDescription>
-                Update the name for this conversation.
-              </DialogDescription>
-            </DialogHeader>
-            <Input
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              className="mt-2"
-            />
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
-              </DialogClose>
-              <DialogClose asChild>
-                <Button disabled={newName==chat.chat_name} onClick={handleRename}>Save</Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+      {!isCollapsed && (
+        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+          {/* RENAME DIALOG */}
+          <Dialog
+            onOpenChange={(open: boolean) => {
+              if (!open) {
+                setTimeout(() => {
+                  setNewName(chat.chat_name)
+                }, 100)
+              }
+            }}
+          >
+            <TooltipProvider>
+              <Tooltip>
+                <DialogTrigger asChild>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label="Rename chat"
+                      className="p-1.5 text-slate-500 hover:text-cyan-300 hover:bg-slate-800 rounded-lg transition-colors"
+                    >
+                      <Edit2 className="size-3" />
+                    </button>
+                  </TooltipTrigger>
+                </DialogTrigger>
+                <TooltipContent>
+                  <p className="text-xs">Rename Chat</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <DialogContent className="bg-slate-900 border-slate-800 text-slate-100 rounded-2xl">
+              <DialogHeader>
+                <DialogTitle className="text-white text-base">Rename Chat</DialogTitle>
+                <DialogDescription className="text-slate-400 text-xs">
+                  Update the title for this conversation.
+                </DialogDescription>
+              </DialogHeader>
+              <Input
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                className="mt-2 bg-slate-950 border-slate-800 text-slate-100 rounded-xl text-sm"
+              />
+              <DialogFooter className="mt-4">
+                <DialogClose asChild>
+                  <Button variant="outline" className="border-slate-800 text-slate-300">
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <DialogClose asChild>
+                  <Button disabled={newName === chat.chat_name} onClick={handleRename} className="bg-cyan-600 hover:bg-cyan-500 text-white">
+                    Save
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
-        {/* DELETE ALERT DIALOG */}
-
- <AlertDialog>
-          <TooltipProvider>
-            <Tooltip>
-              <AlertDialogTrigger asChild>
-                <TooltipTrigger asChild>
-                  <button
-                    aria-label="Delete chat"
-                    type="button"
-                    className="p-2 text-sidebar-foreground/60 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </button>
-                </TooltipTrigger>
-              </AlertDialogTrigger>
-              <TooltipContent>
-                <p>Delete Chat</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Delete Chat?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete the
-                chat and all its messages.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete}>
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-
-        
-      </div>
+          {/* DELETE ALERT DIALOG */}
+          <AlertDialog>
+            <TooltipProvider>
+              <Tooltip>
+                <AlertDialogTrigger asChild>
+                  <TooltipTrigger asChild>
+                    <button
+                      aria-label="Delete chat"
+                      type="button"
+                      className="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition-colors"
+                    >
+                      <Trash2 className="size-3" />
+                    </button>
+                  </TooltipTrigger>
+                </AlertDialogTrigger>
+                <TooltipContent>
+                  <p className="text-xs">Delete Chat</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <AlertDialogContent className="bg-slate-900 border-slate-800 text-slate-100 rounded-2xl">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="text-white text-base">Delete Chat?</AlertDialogTitle>
+                <AlertDialogDescription className="text-slate-400 text-xs">
+                  This action cannot be undone. This conversation will be permanently removed.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter className="mt-4">
+                <AlertDialogCancel className="border-slate-800 text-slate-300">
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-500 text-white">
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      )}
     </div>
   )
 }

@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState,ReactNode  } from 'react'
 
 interface userInfo{
+  name?:string
   email?:string
   user_id?:number
   total_chats?:number
@@ -33,7 +34,7 @@ export default function ChatProvider({children}: {children: ReactNode}) {
                 });
                 const data = await res.json();
                 setChats(data.chats || []);
-                setUserInfo({email:data.user_email,user_id:data.user_id,total_chats:data.total_chats})
+                setUserInfo({name: data.user_name || data.name, email:data.user_email,user_id:data.user_id,total_chats:data.total_chats})
             } catch (err) {
                 console.error("Failed to load chats:", err);
             }
