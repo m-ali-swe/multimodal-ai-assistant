@@ -3,7 +3,8 @@
 import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
-import { Mail, Lock, User, Eye, EyeOff, ArrowRight, Loader2, AlertCircle, Cpu, FileText, FileSpreadsheet, Presentation, Image as ImageIcon, FileCode } from "lucide-react"
+import Image from "next/image"
+import { Mail, Lock, User, Eye, EyeOff, ArrowRight, Loader2, AlertCircle, FileText, FileSpreadsheet, Presentation, Image as ImageIcon, FileCode } from "lucide-react"
 import { toast } from "sonner"
 
 import { cn } from "@/lib/utils"
@@ -71,12 +72,18 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
   }
 
   return (
-    <div className={cn("w-full max-w-md mx-auto space-y-6", className)} {...props}>
-      {/* Brand & Multimodal Identity Header */}
-      <div className="flex flex-col items-center text-center space-y-3">
-        <Link href="/" className="inline-flex items-center gap-3 group focus:outline-none">
-          <div className="p-2.5 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl shadow-cyan-950/30 group-hover:border-cyan-500/50 transition-all duration-300">
-            <Cpu className="size-6 text-cyan-400 group-hover:scale-105 transition-transform duration-300" />
+    <div className={cn("w-full max-w-sm sm:max-w-md mx-auto space-y-3.5", className)} {...props}>
+      {/* Brand & Multimodal Identity Header with Favicon */}
+      <div className="flex flex-col items-center text-center space-y-1.5">
+        <Link href="/" className="inline-flex items-center gap-2.5 group focus:outline-none">
+          <div className="p-2 rounded-xl bg-slate-900 border border-slate-800 shadow-lg shadow-cyan-950/30 group-hover:border-cyan-500/50 transition-all duration-300">
+            <Image
+              src="/favicon-32x32.png"
+              alt="Multimodal AI Assistant"
+              width={28}
+              height={28}
+              className="size-7 object-contain"
+            />
           </div>
           <span className="text-xl font-bold tracking-tight text-white">
             Multimodal <span className="text-cyan-400">AI</span>
@@ -85,19 +92,19 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 
         {/* Format Badges */}
         <div className="flex items-center justify-center flex-wrap gap-1.5 text-[11px] font-mono text-slate-400">
-          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2.5 py-1 rounded-md border border-slate-800 text-slate-300">
+          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2 py-0.5 rounded border border-slate-800 text-slate-300">
             <Presentation className="size-3 text-orange-400" /> PPTX
           </span>
-          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2.5 py-1 rounded-md border border-slate-800 text-slate-300">
+          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2 py-0.5 rounded border border-slate-800 text-slate-300">
             <FileText className="size-3 text-blue-400" /> DOCX
           </span>
-          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2.5 py-1 rounded-md border border-slate-800 text-slate-300">
+          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2 py-0.5 rounded border border-slate-800 text-slate-300">
             <FileSpreadsheet className="size-3 text-emerald-400" /> XLSX
           </span>
-          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2.5 py-1 rounded-md border border-slate-800 text-slate-300">
+          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2 py-0.5 rounded border border-slate-800 text-slate-300">
             <ImageIcon className="size-3 text-purple-400" /> Images
           </span>
-          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2.5 py-1 rounded-md border border-slate-800 text-slate-300">
+          <span className="inline-flex items-center gap-1 bg-slate-900/90 px-2 py-0.5 rounded border border-slate-800 text-slate-300">
             <FileCode className="size-3 text-cyan-400" /> Code
           </span>
         </div>
@@ -105,29 +112,29 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
 
       {/* Auth Card */}
       <Card className="bg-slate-900/90 border-slate-800 shadow-2xl shadow-cyan-950/20 text-slate-100 rounded-2xl overflow-hidden backdrop-blur-xl">
-        <CardHeader className="space-y-1 text-center pt-6 pb-4 px-6 sm:px-8">
-          <CardTitle className="text-2xl font-bold tracking-tight text-white">
+        <CardHeader className="space-y-1 text-center pt-4 pb-2 px-6">
+          <CardTitle className="text-xl font-bold tracking-tight text-white">
             Create an account
           </CardTitle>
-          <CardDescription className="text-slate-400 text-sm">
+          <CardDescription className="text-slate-400 text-xs sm:text-sm">
             Enter your details to register for the platform
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="px-6 sm:px-8 pt-2 pb-6">
+        <CardContent className="px-6 pt-1 pb-4">
           {errorMessage && (
-            <Alert variant="destructive" className="mb-4 bg-red-950/40 border-red-900/50 text-red-300 text-xs rounded-xl animate-in fade-in duration-200">
+            <Alert variant="destructive" className="mb-2 bg-red-950/40 border-red-900/50 text-red-300 text-xs rounded-xl animate-in fade-in duration-200 py-1.5">
               <AlertCircle className="size-4 text-red-400 mt-0.5" />
               <div>
-                <AlertTitle className="font-semibold text-red-200 text-xs">Registration Issue</AlertTitle>
+                <AlertTitle className="font-semibold text-red-200 text-xs">Registration Error</AlertTitle>
                 <AlertDescription className="text-red-300/90 text-xs mt-0.5">{errorMessage}</AlertDescription>
               </div>
             </Alert>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-3.5">
-            <div className="space-y-1.5">
-              <Label htmlFor="name" className="text-slate-300 font-medium text-xs sm:text-sm">
+          <form onSubmit={handleSubmit} className="space-y-2.5">
+            <div className="space-y-1">
+              <Label htmlFor="name" className="text-slate-300 font-medium text-xs">
                 Full Name
               </Label>
               <div className="relative">
@@ -139,13 +146,13 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="pl-10 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-cyan-500/30 focus-visible:border-cyan-500/50 rounded-xl h-10 text-sm transition-all duration-200"
+                  className="pl-10 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-cyan-500/30 focus-visible:border-cyan-500/50 rounded-xl h-9 text-sm transition-all duration-200"
                 />
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-slate-300 font-medium text-xs sm:text-sm">
+            <div className="space-y-1">
+              <Label htmlFor="email" className="text-slate-300 font-medium text-xs">
                 Email Address
               </Label>
               <div className="relative">
@@ -157,13 +164,13 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-cyan-500/30 focus-visible:border-cyan-500/50 rounded-xl h-10 text-sm transition-all duration-200"
+                  className="pl-10 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-cyan-500/30 focus-visible:border-cyan-500/50 rounded-xl h-9 text-sm transition-all duration-200"
                 />
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-slate-300 font-medium text-xs sm:text-sm">
+            <div className="space-y-1">
+              <Label htmlFor="password" className="text-slate-300 font-medium text-xs">
                 Password
               </Label>
               <div className="relative">
@@ -175,7 +182,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 pr-10 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-cyan-500/30 focus-visible:border-cyan-500/50 rounded-xl h-10 text-sm transition-all duration-200"
+                  className="pl-10 pr-10 bg-slate-950/60 border-slate-800 text-slate-100 placeholder:text-slate-500 focus-visible:ring-cyan-500/30 focus-visible:border-cyan-500/50 rounded-xl h-9 text-sm transition-all duration-200"
                 />
                 <button
                   type="button"
@@ -192,7 +199,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-medium py-2 rounded-xl transition-all duration-200 h-10 shadow-lg shadow-cyan-950/40 disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-2"
+              className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-medium py-2 rounded-xl transition-all duration-200 h-9 shadow-lg shadow-cyan-950/40 disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-1"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center gap-2">
@@ -209,7 +216,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
           </form>
         </CardContent>
 
-        <CardFooter className="px-6 sm:px-8 py-4 bg-slate-950/50 border-t border-slate-800/80 text-center justify-center">
+        <CardFooter className="px-6 py-3 bg-slate-950/50 border-t border-slate-800/80 text-center justify-center">
           <p className="text-xs text-slate-400">
             Already have an account?{" "}
             <Link

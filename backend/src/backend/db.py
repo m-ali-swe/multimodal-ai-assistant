@@ -24,6 +24,7 @@ class Chats(Base):
 class User(Base):
     __tablename__="users"
     id:Mapped[int]=mapped_column(primary_key=True)
+    name:Mapped[str | None]=mapped_column(nullable=True)
     email:Mapped[str]=mapped_column(nullable=False,unique=True)
     hashed_password:Mapped[str]=mapped_column(nullable=False)
     chats:Mapped[list["Chats"]]=relationship(backref="chats",passive_deletes=True)

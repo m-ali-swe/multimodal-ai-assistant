@@ -51,14 +51,14 @@ def get_user(email:str,password:str,db:Session):
     except Exception as e:
         return {"error": str(e), "type": "exception"}
         
-def signup_user(db:Session,email:str,password:str):
+def signup_user(db:Session,email:str,password:str,name:str|None=None):
     try:
         user=db.query(User).filter_by(email=email).first()
         if user:
             return {"error":"User already exists","type":"account"}
         else:
             hashed_pass=get_hashed_pass(password)
-            new_user=User(email=email,hashed_password=hashed_pass)
+            new_user=User(email=email,hashed_password=hashed_pass,name=name)
             access_token=create_access_token(email=email)
             db.add(new_user)
             db.commit()

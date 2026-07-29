@@ -382,9 +382,9 @@ def login(db: Annotated[Session, Depends(get_db)], email: str = Body(...), passw
 
 
 @app.post("/auth/signup")
-def signup(db: Annotated[Session, Depends(get_db)], email: str = Body(...), password: str = Body(...)):
+def signup(db: Annotated[Session, Depends(get_db)], email: str = Body(...), password: str = Body(...), name: str | None = Body(None)):
     try:
-        res = signup_user(db=db, email=email, password=password)
+        res = signup_user(db=db, email=email, password=password, name=name)
         if "error" in res or "Error" in res or "Exception" in res:
             return JSONResponse(content={"error": str(res.get("error") or res.get("Exception")), "type": res.get("type", "exception")}, status_code=400)
         response_data = {"message": "account created successfully"}
