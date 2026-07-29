@@ -1,6 +1,6 @@
 from datetime import datetime,timedelta,timezone
 from passlib.context import CryptContext
-from src.chatbot_backend.db import Session,User
+from src.backend.db import Session,User
 from jose import jwt,JWTError
 
 Secret_Key="My_Secret"
@@ -49,7 +49,7 @@ def get_user(email:str,password:str,db:Session):
         else:
             return {"error":"No user found","type":"account"}
     except Exception as e:
-        return {"Exception":e,"type":"exception"}
+        return {"error": str(e), "type": "exception"}
         
 def signup_user(db:Session,email:str,password:str):
     try:
@@ -63,9 +63,8 @@ def signup_user(db:Session,email:str,password:str):
             db.add(new_user)
             db.commit()
             db.refresh(new_user)
-            db.commit()
-            db.refresh(new_user)
             return {"new_user":new_user,"access_token":access_token}
     except Exception as e:
-        return {"error":e,"type":"exception"}
+        return {"error": str(e), "type": "exception"}
+
     

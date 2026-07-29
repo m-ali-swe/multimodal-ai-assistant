@@ -23,8 +23,8 @@ from PyPDF2 import PdfReader
 from docx import Document
 # import pandas as pd
 from pptx import Presentation
-from src.chatbot_backend.db import get_db,Session,Chats,User #type: ignore
-from src.chatbot_backend.service import get_user,signup_user #type: ignore
+from src.backend.db import get_db,Session,Chats,User #type: ignore
+from src.backend.service import get_user,signup_user #type: ignore
 
 _:bool=load_dotenv(find_dotenv())
 
@@ -406,3 +406,8 @@ def logout():
     response.delete_cookie(key="user_id", path="/",secure=True,samesite="none")
     print("User logged out, cookies deleted.")
     return response
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("src.backend.main:app", host="0.0.0.0", port=8000, reload=True)
+

@@ -32,7 +32,7 @@ class User(Base):
 
 
 engine=create_engine(DB_URI,echo=True)
-# Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 session=sessionmaker(bind=engine)
 
