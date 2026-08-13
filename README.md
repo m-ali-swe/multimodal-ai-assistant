@@ -48,7 +48,7 @@
 ```text
 ┌────────────────────────────────────────────────────────────────────────┐
 │                        USER BROWSER / CLIENT                           │
-│                 (React 19 / Shadcn UI / Tailwind CSS v4)                │
+│                 (React 19 / Shadcn UI / Tailwind CSS v4)               │
 └──────────────────────────────────┬─────────────────────────────────────┘
                                    │ HTTP-Only Cookies & SSE Streaming
                                    ▼
@@ -65,7 +65,7 @@
                                    ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │                   LANGGRAPH STATEGRAPH WORKFLOW                        │
-│   (Conversation Node ➔ Tool Execution Node ➔ Summarizer Node)          │
+│   (Conversation Node ➔ Tool Execution Node ➔ Summarizer Node)         │
 └──────────────────┬───────────────────────────────┬─────────────────────┘
                    │                               │
                    ▼                               ▼
