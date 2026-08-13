@@ -79,27 +79,27 @@
 
 ## 📊 Database Schema (PostgreSQL & SQLAlchemy)
 
-```
-+------------------------------------+        +------------------------------------+
-|               User                 |        |               Chats                |
-+------------------------------------+        +------------------------------------+
-| id (PK, String/UUID)               |<------1| thread_id (PK, String/UUID)       |
-| email (Unique, String)             |       | user_id (FK -> User.id)            |
-| name (String, Nullable)            |        | chat_name (String)                 |
-| hashed_password (String)           |        | created_at (Timestamp)             |
-| created_at (Timestamp)             |        +------------------------------------+
-+------------------------------------+                          |
-                                                                | 1:N
-                                                                v
-                                              +------------------------------------+
-                                              |       checkpoints (LangGraph)      |
-                                              +------------------------------------+
-                                              | thread_id (String)                 |
-                                              | checkpoint_id (String)             |
-                                              | parent_checkpoint_id (String)      |
-                                              | type (String)                      |
-                                              | checkpoint (Bytea/JSONB)           |
-                                              +------------------------------------+
+```text
+┌────────────────────────────────────────┐             ┌────────────────────────────────────────┐
+│                 users                  │             │                 chats                  │
+├────────────────────────────────────────┤             ├────────────────────────────────────────┤
+│ id                (PK, String/UUID)    │─── 1 ── N ─►│ user_id           (FK -> users.id)     │
+│ email             (Unique, String)     │             │ thread_id         (PK, String/UUID)    │
+│ name              (String, Nullable)   │             │ chat_name         (String)             │
+│ hashed_password   (String)             │             │ created_at        (Timestamp)          │
+│ created_at        (Timestamp)          │             └────────────────────────────────────────┘
+└────────────────────────────────────────┘                                  │
+                                                                            │ 1 : N
+                                                                            ▼
+                                                       ┌────────────────────────────────────────┐
+                                                       │        checkpoints (LangGraph)         │
+                                                       ├────────────────────────────────────────┤
+                                                       │ thread_id         (FK -> chats.id)     │
+                                                       │ checkpoint_id     (PK, String)         │
+                                                       │ parent_ckpt_id    (String, Nullable)   │
+                                                       │ type              (String)             │
+                                                       │ checkpoint        (Bytea / JSONB)      │
+                                                       └────────────────────────────────────────┘
 ```
 
 ---
