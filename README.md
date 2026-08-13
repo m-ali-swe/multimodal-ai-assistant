@@ -65,7 +65,7 @@
                                    ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │                   LANGGRAPH STATEGRAPH WORKFLOW                        │
-│   (Conversation Node ➔ Tool Execution Node ➔ Summarizer Node)         │
+│   (Conversation Node ➔ Tool Execution Node ➔ Summarizer Node)        │
 └──────────────────┬───────────────────────────────┬─────────────────────┘
                    │                               │
                    ▼                               ▼
