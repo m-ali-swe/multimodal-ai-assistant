@@ -20,6 +20,7 @@ import io
 import uuid
 import logging
 from src.backend.db import get_db, Session, Chats, User
+from src.backend.service import signup_user,get_user
 
 # -----------------------------------------------------------------------------
 # Structured Logging Setup
