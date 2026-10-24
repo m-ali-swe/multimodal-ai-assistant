@@ -65,7 +65,7 @@
                                    ▼
 ┌────────────────────────────────────────────────────────────────────────┐
 │                   LANGGRAPH STATEGRAPH WORKFLOW                        │
-│   (Conversation Node ➔ Tool Execution Node ➔ Summarizer Node)         │
+│   (Conversation Node ➔ Tool Execution Node ➔ Summarizer Node)        │
 └──────────────────┬───────────────────────────────┬─────────────────────┘
                    │                               │
                    ▼                               ▼
@@ -83,7 +83,7 @@
 ┌────────────────────────────────────────┐             ┌────────────────────────────────────────┐
 │                 users                  │             │                 chats                  │
 ├────────────────────────────────────────┤             ├────────────────────────────────────────┤
-│ id                (PK, String/UUID)    │─── 1 ── N ─►│ user_id           (FK -> users.id)     │
+│ id                (PK, String/UUID)    │─── 1 : N ──►│ user_id           (FK -> users.id)     │
 │ email             (Unique, String)     │             │ thread_id         (PK, String/UUID)    │
 │ name              (String, Nullable)   │             │ chat_name         (String)             │
 │ hashed_password   (String)             │             │ created_at        (Timestamp)          │
